@@ -1,0 +1,1 @@
+<view><cu-custom vue-id="603bb990-1" bgColor="bg-gradual-green" isBack="{{true}}" bind:__l="__l" vue-slots="{{['content']}}"><view slot="content">物品选择</view></cu-custom></view>

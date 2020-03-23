@@ -1,9 +1,23 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
+	<view>
+		<cu-custom bgColor="bg-gradual-green" :isBack="false">
+			<block slot="content">用品申领平台</block>
+		</cu-custom>
+		<view class="cu-list grid col-2 no-border" style="margin-top: 70upx; padding-top: 40upx;">
+			<view class="cu-item" @tap="onClickScan">
+				<view class="flex justify-center">
+					<image src="../../static/scan.png" style="width: 80upx; height: 80upx;"></image>
+				</view>
+				<text class="margin-top-sm">扫码领用</text>
+			</view>
+			<view class="cu-item" @tap="onClickHistory">
+				<view class="flex justify-center">
+					<image src="../../static/order.png" style="width: 80upx; height: 80upx;"></image>
+				</view>
+				<text class="margin-top-sm">我的领用</text>
+			</view>
 		</view>
+		
 	</view>
 </template>
 
@@ -11,42 +25,33 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-
+			onClickScan(){
+				uni.scanCode({
+				    onlyFromCamera: true,
+				    success: function (res) {
+				        console.log('条码类型：' + res.scanType);
+				        console.log('条码内容：' + res.result);
+						uni.showToast({
+							icon:'none',
+							title:'条码类型：' + res.scanType + ', ' + '条码内容：' + res.result
+						})
+				    }
+				});
+			},
+			onClickHistory(){
+				
+			}
 		}
 	}
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+	
 </style>

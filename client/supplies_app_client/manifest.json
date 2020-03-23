@@ -8,14 +8,14 @@
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
-        "nvueCompiler" : "uni-app",
-        "compilerVersion" : 3,
-        "splashscreen" : {
-            "alwaysShowBeforeRender" : true,
-            "waiting" : true,
-            "autoclose" : true,
-            "delay" : 0
-        },
+        // "nvueCompiler" : "uni-app",
+        // "compilerVersion" : 3,
+        // "splashscreen" : {
+        //     "alwaysShowBeforeRender" : true,
+        //     "waiting" : true,
+        //     "autoclose" : true,
+        //     "delay" : 0
+        // },
         /* 模块配置 */
         "modules" : {},
         /* 应用发布信息 */
@@ -57,11 +57,12 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx983045e5d6edbfc5",
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {}
     },
     "mp-alipay" : {
         "usingComponents" : true
