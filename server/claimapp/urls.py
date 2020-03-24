@@ -12,9 +12,9 @@ urlpatterns = [
     
     url(r'^user_login/', views.user_login),
     url(r'^reset_password/', views.reset_password),
-    url(r'^get_user_device_index_info/', views.get_user_device_index_info),
+    # url(r'^get_user_device_index_info/', views.get_user_device_index_info),
     path('device/<int:sn>/', views.device_opt_detail),
-    path('event/<int:user_id>/<int:start_index>/<int:num>/<start_time>/<end_time>', views.event_detail),
+    # path('event/<int:user_id>/<int:start_index>/<int:num>/<start_time>/<end_time>', views.event_detail),
 
 
     

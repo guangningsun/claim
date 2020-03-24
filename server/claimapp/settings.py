@@ -163,33 +163,21 @@ SIMPLEUI_CONFIG = {
         'name': '系统管理',
         'icon': 'fab fa-dashcube',
         'models': [{
-            'name': '组织机构管理',
+            'name': '资产管理',
+            'url': 'AppModel/category',
+            'icon': 'fa fa-server'
+        },{
+            'name': '部门管理',
             'url': 'AppModel/category',
             'icon': 'fa fa-tags'
-        },{
-            'name': '组织机构列表',
-            'url': 'AppModel/post',
-            'icon': 'fa fa-tags'
         }, {
-            'name': '联网单位信息',
+            'name': '领用记录',
             'url': 'AppModel/companyinfo',
             'icon': 'fa fa-id-card'
         }, {
             'name': '用户管理',
             'url': 'AppModel/userinfo/',
             'icon': 'fa fa-user-circle'
-        }]
-        }, {
-        'name': '设备管理',
-        'icon': 'fa fa-bars',
-        'models': [{
-            'name': '设备管理',
-            'url': 'AppModel/deviceinfo/',
-            'icon': 'fa fa-server'
-        }, {
-            'name': '上线记录',
-            'url': 'AppModel/mappinguserinfodevicename/',
-            'icon': 'fa fa-paper-plane'
         }]
         },{
         'app': 'auth',
@@ -203,50 +191,6 @@ SIMPLEUI_CONFIG = {
             'name': '用户组',
             'icon': 'fa fa-users',
             'url': 'auth/group/'
-        }]
-    },{
-        'name': '消防管理',
-        'icon': 'fa fa-fire-extinguisher',
-        'models': [{
-            'name': '巡检管理',
-            'url': 'AppModel/patrolscheme',
-            'icon': 'fa fa-fire-extinguisher'
-        }, {
-            'name': '隐患整改',
-            'url': 'AppModel/dangerrectification',
-            'icon': 'far fa-surprise'
-        }, {
-            'name': '维修保养',
-            'url': 'AppModel/maintenanceinfo',
-            'icon': 'fa fa-bell-slash'
-        }]
-    },{
-        'name': '监控中心',
-        'icon': 'fab fa-cloudversify',
-        'models': [{
-            'name': '设备中心',
-            'url': 'AppModel/onlinedeviceinfo',
-            'icon': 'far fa-surprise'
-        }, {
-            'name': '报警中心',
-            'url': 'AppModel/alarminfo',
-            'icon': 'fa fa-phone'
-        }, {
-            'name': '事件历史',
-            'url': 'AppModel/eventinfo',
-            'icon': 'fa fa-terminal'
-        }, {
-            'name': '视频中心',
-            'url': '',
-            'icon': 'fa fa-terminal'
-        }]
-    },{
-        'name': '系统设置',
-        'icon': 'fa fa-tasks',
-        'models': [{
-            'name': '系统设置',
-            'url': '',
-            'icon': 'fa fa-tasks'
         }]
     }]
 }
