@@ -24,12 +24,20 @@ class UserInfo(models.Model):
 
 
 class AssetInfo(models.Model):
-    asset_name = models.CharField(max_length=200,verbose_name='资产名称')
-    asset_count = models.CharField(max_length=200,verbose_name='资产数量')
+    asset_name = models.CharField(max_length=200,verbose_name='物品名称')
+    asset_sn = models.CharField(max_length=200,verbose_name='物品编码')
+    asset_count = models.CharField(max_length=200,verbose_name='物品库存')
+    asset_band = models.CharField(max_length=200,verbose_name='物品品牌')
+    asset_specification = models.CharField(max_length=200,verbose_name='物品规格')
+    asset_band = models.CharField(max_length=200,verbose_name='物品品牌')
+    asset_unit = models.CharField(max_length=200,verbose_name='计量单位')
+    asset_image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
+
+
 
     class Meta:
-        verbose_name = '资产信息'
-        verbose_name_plural = '资产信息'
+        verbose_name = '物品信息'
+        verbose_name_plural = '物品信息'
     
 
 class ClaimRecord(models.Model):
@@ -37,9 +45,13 @@ class ClaimRecord(models.Model):
     claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
     claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
-    claim_name = models.CharField(max_length=200,verbose_name='资产名称')
+    claim_name = models.CharField(max_length=200,verbose_name='物品名称')
     claim_date = models.DateField(default=datetime.date.today,verbose_name='申领时间')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
+
+    class Meta:
+        verbose_name = '领用记录'
+        verbose_name_plural = '领用记录'
 
 
 # 组织机构详细信息
