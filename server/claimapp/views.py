@@ -82,6 +82,7 @@ def claim_asset(request):
                                     claim_name=claim_name,
                                     category=Category.objects.get(id=category),
                                     )
+            claimrecord.save()
             return _generate_json_message(True, "申领成功")
             
         except :
