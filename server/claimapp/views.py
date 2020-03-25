@@ -59,12 +59,13 @@ def claim_asset(request):
         # claim_username = request.POST['claim_username']
         # import pdb;pdb.set_trace()
         claim_list = request.POST['choose_list']
-        for claim_submmit in json.loads(claim_list):
-            claim_count = claim_submmit['claim_count']
-            # claim_phone_num = request.POST['claim_phone_num']
-            claim_name = claim_submmit['claim_name']
-            category = claim_submmit['category']
-            try:
+        try:
+            for claim_submmit in json.loads(claim_list):
+                claim_count = claim_submmit['claim_count']
+                # claim_phone_num = request.POST['claim_phone_num']
+                claim_name = claim_submmit['claim_name']
+                category = claim_submmit['category']
+                
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
                 # import pdb;pdb.set_trace()
                 # 查看申领物品剩余是否足量
@@ -86,9 +87,9 @@ def claim_asset(request):
                                         category=Category.objects.get(id=category),
                                         )
                 claimrecord.save()
-                return _generate_json_message(True, "申领成功")
-            except :
-                return _generate_json_message(False, "仓库中没有该类型商品")
+            return _generate_json_message(True, "申领成功")
+        except :
+            return _generate_json_message(False, "仓库中没有该类型商品")
     
 
 # 用户注册功能
