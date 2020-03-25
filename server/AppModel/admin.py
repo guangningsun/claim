@@ -25,11 +25,11 @@ logger.addHandler(handler)
 # 资产管理
 @admin.register(AssetInfo)
 class AssetInfoAdmin(ImportExportModelAdmin):
-    list_display=['asset_name','asset_count','asset_sn','asset_band','asset_specification','asset_unit','asset_image']
+    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image']
     # list_editable = ['asset_name','asset_count']
-    search_fields =('asset_name','asset_count','asset_sn','asset_band','asset_specification','asset_unit','asset_image')
+    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image')
     fieldsets = [
-       ('用户数据', {'fields': ['asset_name','asset_count','asset_sn','asset_band','asset_specification','asset_unit','asset_image'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image'], 'classes': ['collapse']}),
     ]
     list_display_links = ('asset_name',)
 

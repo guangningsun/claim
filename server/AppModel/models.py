@@ -26,6 +26,7 @@ class UserInfo(models.Model):
 class AssetInfo(models.Model):
     asset_name = models.CharField(max_length=200,verbose_name='物品名称')
     asset_sn = models.CharField(max_length=200,verbose_name='物品编码')
+    asset_type = models.CharField(max_length=200,verbose_name='物品型号')
     asset_count = models.CharField(max_length=200,verbose_name='物品库存')
     asset_band = models.CharField(max_length=200,verbose_name='物品品牌')
     asset_specification = models.CharField(max_length=200,verbose_name='物品规格')
