@@ -168,6 +168,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 //
 //
 //
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -176,36 +180,14 @@ var _default =
       {
         time: '2020-03-20 10:00',
         status: '已申领',
-        item_list: [
-        {
-          name: '笔',
-          num: 3 },
-
-        {
-          name: '橡皮擦',
-          num: 2 },
-
-        {
-          name: '订书机',
-          num: 1 }],
-
-
-        item_str: '笔(3),橡皮擦(2),订书机(1)' },
+        item_name: '笔',
+        item_num: 3 },
 
       {
         time: '2020-03-20 10:00',
-        status: '申领中',
-        item_list: [
-        {
-          name: '中性笔',
-          num: 10 },
-
-        {
-          name: '橡皮擦',
-          num: 1 }],
-
-
-        item_str: '中性笔(10),橡皮擦(1)' }] };
+        status: '已申领',
+        item_name: '橡皮擦',
+        item_num: 4 }] };
 
 
 

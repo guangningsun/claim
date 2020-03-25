@@ -163,47 +163,128 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
     return {};
-
-
   },
-  onLoad: function onLoad() {
-
-  },
+  onLoad: function onLoad() {},
   onShow: function onShow() {
-    uni.login({
-      provider: 'weixin',
-      success: function success(loginRes) {
-        console.log("+++code：" + loginRes.code);
+    // uni.login({
+    // 	provider: 'weixin',
+    // 	success: function(loginRes) {
+    // 		console.log('+++code：' + loginRes.code);
 
-        uni.setStorage({
-          key: 'key_wx_code',
-          data: loginRes.code });
+    // 		uni.setStorage({
+    // 			key: 'key_wx_code',
+    // 			data: loginRes.code
+    // 		});
+    // 	}
+    // });
 
-      } });
-
+    //1.调用登录接口
+    // wx.login({
+    // 	success: res => {
+    // 		wx.getUserInfo({
+    // 			success: function(res) {
+    // 				that.globalData.userInfo = res.userInfo;
+    // 				// typeof cb == 'function' && cb(that.globalData.userInfo, true);
+    // 				console.log(res.userInfo);
+    // 			},
+    // 			fail: function() {
+    // 				//2.第一次登陆不强制授权，直接返回
+    // 				// if (loginType == 0) {
+    // 				// 	typeof cb == 'function' && cb(that.globalData.userInfo, false);
+    // 				// } else {
+    // 				//3.授权友好提示
+    // 				wx.showModal({
+    // 					title: '提示',
+    // 					content: '您还未授权登陆，部分功能将不能使用，是否重新授权？',
+    // 					showCancel: true,
+    // 					cancelText: '否',
+    // 					confirmText: '是',
+    // 					success: function(res) {
+    // 						//4.确认授权调用wx.openSetting
+    // 						if (res.confirm) {
+    // 							if (wx.openSetting) {
+    // 								//当前微信的版本 ，是否支持openSetting
+    // 								wx.openSetting({
+    // 									success: res => {
+    // 										if (res.authSetting['scope.userInfo']) {
+    // 											//如果用户重新同意了授权登录
+    // 											wx.getUserInfo({
+    // 												success: function(res) {
+    // 													// that.globalData.userInfo = res.userInfo;
+    // 													console.log(res.userInfo);
+    // 												}
+    // 											});
+    // 										} else {
+    // 											//用户还是拒绝
+    // 											// typeof cb == 'function' &&
+    // 											// 	cb(that.globalData.userInfo, false);
+    // 												console.log("用户还是拒绝");
+    // 										}
+    // 									},
+    // 									fail: function() {
+    // 										// //调用失败，授权登录不成功
+    // 										// typeof cb == 'function' &&
+    // 										// 	cb(that.globalData.userInfo, false);
+    // 											console.log("调用失败，授权登录不成功");
+    // 									}
+    // 								});
+    // 							} else {
+    // 								console.log("当前微信的版本 ，不支持openSetting");
+    // 							}
+    // 						} else {
+    // 							console.log("不confirm");
+    // 						}
+    // 					}
+    // 				});
+    // 				// }
+    // 			}
+    // 		});
+    // 	},
+    // 	fail: res => {}
+    // });
   },
   methods: {
-    onClickScan: function onClickScan() {
+    onClickScan: function onClickScan() {var _this = this;
       uni.scanCode({
         onlyFromCamera: true,
         success: function success(res) {
           console.log('条码类型：' + res.scanType);
           console.log('条码内容：' + res.result);
-          uni.showToast({
-            icon: 'none',
-            title: '条码类型：' + res.scanType + ', ' + '条码内容：' + res.result });
+          if (_this.containsStr(res.result, 'http')) {
+            var cat = res.result.split('/');
 
+            uni.setStorageSync('key_cat', cat[cat.length - 1]);
+
+            uni.navigateTo({
+              url: '../item_choose/cart' });
+
+          }
         } });
 
     },
+
     onClickHistory: function onClickHistory() {
       uni.navigateTo({
         url: '../history/history' });
 
+    },
+    onGotUserInfo: function onGotUserInfo(e) {
+      console.log(e);
+    },
+    getPhoneNumber: function getPhoneNumber(e) {
+      console.log(e);
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

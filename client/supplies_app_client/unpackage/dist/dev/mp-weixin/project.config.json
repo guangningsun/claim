@@ -9,7 +9,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.9.2",
   "appid": "wx983045e5d6edbfc5",
-  "projectname": "supplies_app_client",
+  "projectname": "用品申领",
   "condition": {
     "search": {
       "current": -1,
@@ -24,19 +24,13 @@
       "list": []
     },
     "miniprogram": {
-      "current": 1,
+      "current": 0,
       "list": [
         {
           "name": "",
           "path": "",
           "query": "",
           "id": 0
-        },
-        {
-          "id": 1,
-          "name": "pages/history/history",
-          "pathName": "pages/history/history",
-          "query": ""
         }
       ]
     }
