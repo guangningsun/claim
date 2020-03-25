@@ -4,22 +4,12 @@
 		globalData: {
 			user_id:'',
 			domain_port: 'http://114.115.136.120:8010/',
-			domain_port2: 'http://114.115.136.120:8010',
 			
 			// API 接口
 			api_login: 'user_login/',
-			api_reset_pass: 'reset_password/',
-			api_get_user_index: 'get_user_device_index_info/',
-			api_device_opt: 'user_opt_device/',
-			api_device: 'device/',
-			api_danger:'danger/',
-			api_admin_danger:'admin_danger/',
-			api_event:'event/',
-			api_update_event_read_state: 'update_event_read_state/',
-			api_update_event_read_state_all: 'update_event_read_state_all/',
-			api_install_device: 'install_device/',
-			api_get_install_by_device_sn: 'get_install_by_device_sn/',
-			api_update_danger_status: 'update_danger_status/',
+			api_submit: 'submit/',
+			api_history: 'get_history_info'
+			
 		},
 
 		onLaunch: function() {
@@ -266,5 +256,5 @@
 		100% {
 			transform: translateY(0px);
 		}
-	}
+	}	
 </style>

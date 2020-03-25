@@ -4,26 +4,19 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "",
-				"backgroundColor":"#EEEEEE"
+				"backgroundColor": "#EEEEEE"
 			}
+		}, {
+			"path": "pages/history/history",
+			"style": {}
+		}, {
+			"path": "pages/item_choose/item_choose",
+			"style": {}
+		}, {
+			"path": "pages/item_choose/cart",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/history/history",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/item_choose/item_choose",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/item_choose/cart/cart",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/item_choose/cart",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

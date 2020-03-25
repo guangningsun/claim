@@ -4748,5 +4748,5 @@ scroll-view.cu-steps .cu-item {
 		-webkit-transform: translateY(0px);
 		        transform: translateY(0px);
 }
-}
+}	
 

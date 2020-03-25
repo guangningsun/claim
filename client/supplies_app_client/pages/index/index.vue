@@ -29,7 +29,20 @@
 			}
 		},
 		onLoad() {
-
+		    
+		},
+		onShow() {
+			uni.login({
+			    provider: 'weixin',
+			    success: function (loginRes) {
+			        console.log("+++code：" + loginRes.code);
+					
+					uni.setStorage({
+						key: 'key_wx_code',
+						data: loginRes.code
+					});
+			    }
+			});
 		},
 		methods: {
 			onClickScan(){
@@ -46,7 +59,9 @@
 				});
 			},
 			onClickHistory(){
-				
+				uni.navigateTo({
+					url:'../history/history'
+				})
 			}
 		}
 	}

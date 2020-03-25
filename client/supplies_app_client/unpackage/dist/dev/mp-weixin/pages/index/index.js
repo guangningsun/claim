@@ -173,6 +173,19 @@ var _default =
   onLoad: function onLoad() {
 
   },
+  onShow: function onShow() {
+    uni.login({
+      provider: 'weixin',
+      success: function success(loginRes) {
+        console.log("+++code：" + loginRes.code);
+
+        uni.setStorage({
+          key: 'key_wx_code',
+          data: loginRes.code });
+
+      } });
+
+  },
   methods: {
     onClickScan: function onClickScan() {
       uni.scanCode({
@@ -188,6 +201,8 @@ var _default =
 
     },
     onClickHistory: function onClickHistory() {
+      uni.navigateTo({
+        url: '../history/history' });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

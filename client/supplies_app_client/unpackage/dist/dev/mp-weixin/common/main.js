@@ -9,7 +9,7 @@
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni, createApp) {__webpack_require__(/*! uni-pages */ 4);__webpack_require__(/*! @dcloudio/uni-stat */ 5);
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));
-var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var cuCustom = function cuCustom() {return __webpack_require__.e(/*! import() | colorui/components/cu-custom */ "colorui/components/cu-custom").then(__webpack_require__.bind(null, /*! ./colorui/components/cu-custom.vue */ 21));};
+var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var cuCustom = function cuCustom() {return __webpack_require__.e(/*! import() | colorui/components/cu-custom */ "colorui/components/cu-custom").then(__webpack_require__.bind(null, /*! ./colorui/components/cu-custom.vue */ 41));};
 
 
 _vue.default.component('cu-custom', cuCustom);
@@ -200,22 +200,12 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _i
   globalData: {
     user_id: '',
     domain_port: 'http://114.115.136.120:8010/',
-    domain_port2: 'http://114.115.136.120:8010',
 
     // API 接口
     api_login: 'user_login/',
-    api_reset_pass: 'reset_password/',
-    api_get_user_index: 'get_user_device_index_info/',
-    api_device_opt: 'user_opt_device/',
-    api_device: 'device/',
-    api_danger: 'danger/',
-    api_admin_danger: 'admin_danger/',
-    api_event: 'event/',
-    api_update_event_read_state: 'update_event_read_state/',
-    api_update_event_read_state_all: 'update_event_read_state_all/',
-    api_install_device: 'install_device/',
-    api_get_install_by_device_sn: 'get_install_by_device_sn/',
-    api_update_danger_status: 'update_danger_status/' },
+    api_submit: 'submit/',
+    api_history: 'get_history_info' },
+
 
 
   onLaunch: function onLaunch() {

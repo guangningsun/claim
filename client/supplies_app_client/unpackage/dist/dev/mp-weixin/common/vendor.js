@@ -8525,7 +8525,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "", "backgroundColor": "#EEEEEE", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/history/history": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/item_choose/item_choose": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/item_choose/cart/cart": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/item_choose/cart": {} }, "globalStyle": { "navigationBarBackgroundColor": "#0b988f", "navigationBarTitleText": "用品申领", "navigationStyle": "custom", "navigationBarTextStyle": "white" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "", "backgroundColor": "#EEEEEE" }, "pages/history/history": {}, "pages/item_choose/item_choose": {}, "pages/item_choose/cart": {} }, "globalStyle": { "navigationBarBackgroundColor": "#0b988f", "navigationBarTitleText": "用品申领", "navigationStyle": "custom", "navigationBarTextStyle": "white" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
@@ -8536,7 +8536,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "appid": "" };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "appid": "__UNI__8A56E3B" };exports.default = _default;
 
 /***/ }),
 /* 9 */,
