@@ -9,12 +9,15 @@ from AppModel import admin as appadmin
 urlpatterns = [
     url('admin/', admin.site.urls),
     re_path(r'^media/(?P<path>.+)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    path('asset/', views.asset_detail),
+    path('userinfo/', views.userinfo_detail),
+    path('record_list/<int:sn>', views.claim_detail),
+    path('claim_asset/<int:weixin_id>', views.claim_asset),
+    path('claim_asset/', views.claim_asset),
+    # url(r'^favicon\.ico/pre>, RedirectView.as_view(url=r'static/favicon.ico')),
+
     
-    url(r'^user_login/', views.user_login),
-    url(r'^reset_password/', views.reset_password),
-    # url(r'^get_user_device_index_info/', views.get_user_device_index_info),
-    path('device/<int:sn>/', views.device_opt_detail),
-    # path('event/<int:user_id>/<int:start_index>/<int:num>/<start_time>/<end_time>', views.event_detail),
+    
 
 
     
