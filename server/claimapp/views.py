@@ -57,8 +57,9 @@ def asset_detail(request):
 def claim_asset(request):
     if request.method == 'POST':
         # claim_username = request.POST['claim_username']
+        # import pdb;pdb.set_trace()
         claim_list = request.POST['choose_list']
-        for claim_submmit in claim_list:
+        for claim_submmit in json.loads(claim_list):
             claim_count = claim_submmit['claim_count']
             # claim_phone_num = request.POST['claim_phone_num']
             claim_name = claim_submmit['claim_name']
