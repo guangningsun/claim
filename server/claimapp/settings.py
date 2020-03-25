@@ -163,7 +163,7 @@ SIMPLEUI_CONFIG = {
         'name': '系统管理',
         'icon': 'fab fa-dashcube',
         'models': [{
-            'name': '资产管理',
+            'name': '物品管理',
             'url': 'AppModel/assetinfo',
             'icon': 'fa fa-server'
         },{
