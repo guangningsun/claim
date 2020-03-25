@@ -28,142 +28,98 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-# 内部方法，用于获取当前时间戳
-# done
-def _get_timestamp():
-    return int(round(time.time()*1000))
-
-
 # 内部方法用于返回json消息
 # done
 def _generate_json_message(flag, message):
     if flag:
         return HttpResponse("{\"error\":0,\"msg\":\""+message+"\"}",
-                            #content_type="application/x-www-form-urlencoded",
                             content_type='application/json',
                             )
     else:
         return HttpResponse("{\"error\":1,\"msg\":\""+message+"\"}",
-                            #content_type="application/x-www-form-urlencoded",
                             content_type='application/json',
                             )
+                            
 
-
-# 内部方法用于将对象返回值转换成json串
-# done
-def _generate_json_from_models(response_list):
-    return HttpResponse(json.dumps(response_list),
-                        #content_type="application/x-www-form-urlencoded",
-                        content_type='application/json',
-                        )
-#                      content_type="application/json")
-
-
-# 用户前端用户登录
-def user_login(request):
-    if request.POST:
-        context = {}
-        login_username = request.POST['username']
-        login_password = request.POST['password']
-        try:
-            if login_username:
-                user_info = UserInfo.objects.get(username=login_username)
-            if user_info is not None:
-                if user_info.password == login_password:
-                    dict_tmp = {}
-                    dict_tmp.update(user_info.__dict__)
-                    dict_tmp.pop("_state", None)
-                    res_data = {"error": 0, "msg": dict_tmp}
-                    return _generate_json_from_models(res_data)
-                else:
-                    return _generate_json_message(False, "username or password doesn`t match")
-        except:
-            return _generate_json_message(False, "login false")
-
-
-# 用户前端用户重置密码
-def reset_password(request):
-    if request.POST:
-        context = {}
-        user_id = request.POST['user_id']
-        old_password = request.POST['old_password']
-        new_password = request.POST['new_password']
-        try:
-            if user_id:
-                user_info = UserInfo.objects.get(id=user_id)
-            if user_info is not None:
-                if user_info.password == old_password:
-                    user_info.password = new_password
-                    user_info.save()
-                    return _generate_json_message(True, "reset password success")
-                else:
-                    return _generate_json_message(False, "old password doesn`t match")
-        except:
-            return _generate_json_message(False, "reset password failed")
-
-# 内部方法device的类编程json格式
-def _gen_device_info_json(device_info):
-    device_info_json =  {
-                                "code": device_info.device_sn, 
-                                "name": device_info.device_name, 
-                                "model": "-", 
-                                "address": "-",
-                                "location": "-",
-                                "signal": device_info.netStatus, 
-                                "battery": device_info.deviceVoltageStatus, 
-                                "image": "-", 
-                            }       
-    return device_info_json
-
-
-@api_view(['GET', 'POST'])
-def device_detail(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
+# 获取资产列表
+@api_view(['GET'])
+def asset_detail(request):
     if request.method == 'GET':
-        deviceset = DeviceInfo.objects.all()
-        serializer = DeviceSerializer(deviceset, many=True)
-        return Response(serializer.data)
+        assetset = AssetInfo.objects.all()
+        serializer = AssetSerializer(assetset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "asset_info": serializer.data }}
+        return Response(res_json)
+
+
+# 物品申领功能
+@api_view(['POST'])
+def claim_asset(request,weixin_id):
+    if request.method == 'POST':
+        claim_username = request.POST['claim_username']
+        claim_count = request.POST['claim_count']
+        claim_phone_num = request.POST['claim_phone_num']
+        claim_name = request.POST['claim_name']
+        category = request.POST['category']
+        try:
+            assetinfo = AssetInfo.objects.get(asset_name=claim_name)
+            # import pdb;pdb.set_trace()
+            # 查看申领物品剩余是否足量
+            if int(assetinfo.asset_count)<int(claim_count):
+                return _generate_json_message(False,""+claim_name+"库存商品不足")
+            # 查看该部门是否有权限申领该数量
+            if int(claim_count)> 5:
+                return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
+            assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
+            # 资产管理减少指定数量物品
+            assetinfo.save()
+            # 创建申领记录
+            claimrecord = ClaimRecord(claim_username=claim_username,
+                                    claim_weixin_id=weixin_id,
+                                    claim_count=claim_count,
+                                    claim_phone_num=claim_phone_num,
+                                    claim_name=claim_name,
+                                    category=Category.objects.get(id=category),
+                                    )
+            return _generate_json_message(True, "申领成功")
+            
+        except :
+            return _generate_json_message(False, "仓库中没有该类型商品")
+    
+
+# 用户注册功能
+@api_view(['GET', 'POST'])
+def userinfo_detail(request):
+    if request.method == 'GET':
+        userset = UserInfo.objects.all()
+        serializer = UserSerializer(userset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "user_info": serializer.data }}
+        return Response(res_json)
     elif request.method == 'POST':
-        serializer = DeviceSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            res_json = {"error": 0,"msg": {
+                    "user_info": serializer.data }}
+            return Response(res_json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 个人申领历史记录
+@api_view(['GET', 'POST'])
+def claim_detail(request,sn):
+    if request.method == 'GET':
+        claimset = ClaimRecord.objects.filter(claim_weixin_id=sn)
+        serializer = ClaimSerializer(claimset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "claim_record_info": serializer.data }}
+        return Response(res_json)
+    elif request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def device_opt_detail(request,sn):
-    """
-    Retrieve, update or delete a code userinfo.
-    """
-
-    try:
-        deviceinfo = DeviceInfo.objects.get(device_sn=sn)
-    except DeviceInfo.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = DeviceSerializer(deviceinfo)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        copy_data = request.data.copy()
-        copy_data.pop("user_id")
-        serializer = DeviceSerializer(deviceinfo, data=copy_data)
-        if serializer.is_valid():
-            serializer.save()
-            res_json = {
-                        "error": 0,
-                        "msg": {
-                        "device_info": serializer.data
-                          }   
-                        }
-            return Response(res_json)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-       
-
-    elif request.method == 'DELETE':
-        userinfo.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)

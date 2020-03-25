@@ -164,7 +164,7 @@ SIMPLEUI_CONFIG = {
         'icon': 'fab fa-dashcube',
         'models': [{
             'name': '资产管理',
-            'url': 'AppModel/category',
+            'url': 'AppModel/assetinfo',
             'icon': 'fa fa-server'
         },{
             'name': '部门管理',
@@ -172,7 +172,7 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-tags'
         }, {
             'name': '领用记录',
-            'url': 'AppModel/companyinfo',
+            'url': 'AppModel/claimrecord',
             'icon': 'fa fa-id-card'
         }, {
             'name': '用户管理',
