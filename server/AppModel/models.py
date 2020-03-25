@@ -42,10 +42,10 @@ class AssetInfo(models.Model):
     
 
 class ClaimRecord(models.Model):
-    claim_username = models.CharField(max_length=200,verbose_name='申领人')
-    claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
+    # claim_username = models.CharField(max_length=200,verbose_name='申领人')
+    # claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
-    claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
+    # claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
     claim_date = models.DateField(default=datetime.date.today,verbose_name='申领时间')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')

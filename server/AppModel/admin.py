@@ -37,13 +37,14 @@ class AssetInfoAdmin(ImportExportModelAdmin):
 # 申领记录管理
 @admin.register(ClaimRecord)
 class ClaimRecordAdmin(ImportExportModelAdmin):
-    list_display=['claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category']
+    # list_display=['claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category']
+    list_display=['claim_count','claim_name','claim_date','category']
     # list_editable = ['claim_username','claim_count','claim_phone_num','claim_name','claim_date','category']
-    search_fields =('claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category')
+    search_fields =('claim_count','claim_name','claim_date','category')
     fieldsets = [
-       ('用户数据', {'fields': ['claim_username','claim_count','claim_weixin_id','claim_phone_num','claim_name','claim_date','category'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['claim_count','claim_name','claim_date','category'], 'classes': ['collapse']}),
     ]
-    list_display_links = ('claim_username',)
+    list_display_links = ('claim_name',)
 
 
 # 用户管理

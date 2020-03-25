@@ -54,11 +54,11 @@ def asset_detail(request):
 
 # 物品申领功能
 @api_view(['POST'])
-def claim_asset(request,weixin_id):
+def claim_asset(request):
     if request.method == 'POST':
-        claim_username = request.POST['claim_username']
+        # claim_username = request.POST['claim_username']
         claim_count = request.POST['claim_count']
-        claim_phone_num = request.POST['claim_phone_num']
+        # claim_phone_num = request.POST['claim_phone_num']
         claim_name = request.POST['claim_name']
         category = request.POST['category']
         try:
@@ -74,10 +74,11 @@ def claim_asset(request,weixin_id):
             # 资产管理减少指定数量物品
             assetinfo.save()
             # 创建申领记录
-            claimrecord = ClaimRecord(claim_username=claim_username,
-                                    claim_weixin_id=weixin_id,
+            claimrecord = ClaimRecord(
+                                    # claim_username=claim_username,
+                                    # claim_weixin_id=weixin_id,
                                     claim_count=claim_count,
-                                    claim_phone_num=claim_phone_num,
+                                    # claim_phone_num=claim_phone_num,
                                     claim_name=claim_name,
                                     category=Category.objects.get(id=category),
                                     )
