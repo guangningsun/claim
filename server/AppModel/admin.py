@@ -32,6 +32,7 @@ class AssetInfoAdmin(ImportExportModelAdmin):
        ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image'], 'classes': ['collapse']}),
     ]
     list_display_links = ('asset_name',)
+    list_per_page = 10
 
 
 # 申领记录管理
@@ -45,6 +46,7 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
        ('用户数据', {'fields': ['claim_count','claim_name','claim_date','category'], 'classes': ['collapse']}),
     ]
     list_display_links = ('claim_name',)
+    list_per_page = 15
 
 
 # 用户管理
@@ -55,6 +57,7 @@ class UserInfoAdmin(ImportExportModelAdmin):
     fieldsets = [
        ('用户数据', {'fields': ['login_name','weixin_id','phone_number','category'], 'classes': ['collapse']}),
     ]
+    list_per_page = 15
 
 
 
