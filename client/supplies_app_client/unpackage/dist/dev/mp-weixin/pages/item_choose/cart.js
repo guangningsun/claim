@@ -234,25 +234,26 @@ __webpack_require__.r(__webpack_exports__);
         iconPath: '/static/submit1.png',
         selectedIconPath: '/static/submit1.png',
         text: '提交选择',
-        active: true }] };
+        active: true
 
-
-
-
-
-
-
-
+        // {
+        // 	iconPath: '/static/order.png',
+        // 	selectedIconPath: '/static/order.png',
+        // 	text: '我的申领',
+        // 	active: false
+        // }
+      }] };
 
   },
   onLoad: function onLoad() {
     this.requestWithMethod(
     getApp().globalData.api_asset,
-    "GET",
+    'GET',
     '',
     this.successCb,
     this.failCb,
     this.completeCb);
+
   },
   methods: {
     successCb: function successCb(rsp) {
@@ -305,20 +306,34 @@ __webpack_require__.r(__webpack_exports__);
     successCallback: function successCallback(rsp) {
       console.log('success cb');
       if (rsp.data.error === 0) {
+        // wx.showToast({
+        // 	title:rsp.data.msg,
+        // 	complete: () => {
+        // 		uni.navigateTo({
+        // 			url: '../index/index'
+        // 		});
+        // 	}
+        // });
         uni.showToast({
-          title: '提交成功!' });
+          title: rsp.data.msg,
+          complete: function complete() {
+            setTimeout(function () {
+              uni.navigateBack({
+                delta: 1 });
 
-        uni.navigateTo({
-          url: '../index/index' });
+            }, 1500);
+          } });
 
+      } else if (rsp.data.error === 1) {
+        this.showToast(rsp.data.msg);
       }
     },
     failCallback: function failCallback(err) {
+      uni.hideLoading();
       console.log('api_claim_asset failed', err);
       this.showToast(err);
     },
     completeCallback: function completeCallback(rsp) {
-      uni.hideLoading();
     },
 
     submit: function submit() {
@@ -326,19 +341,25 @@ __webpack_require__.r(__webpack_exports__);
         title: '正在提交' });
 
 
-      var itemList = this.cartList.filter(function (item) {return item.number > 0;});
+      var itemList = this.cartList.filter(function (item) {
+        return item.number > 0;
+      });
 
       console.log(itemList);
 
       var cat = uni.getStorageSync('key_cat');
       var result_list = itemList.map(function (item) {
-        return Object.assign({ claim_count: item.number }, { claim_name: item.asset_name }, { category: cat });
+        return Object.assign(
+        { claim_count: item.number },
+        { claim_name: item.asset_name },
+        { category: cat });
+
       });
 
       console.log(result_list);
 
       var params = {
-        choose_list: result_list };
+        choose_list: JSON.stringify(result_list) };
 
 
       this.requestWithMethod(

@@ -72,5 +72,9 @@
     },
     "mp-toutiao" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "title" : "用品申领",
+        "domain" : "http://brilliantlife.com.cn"
     }
 }

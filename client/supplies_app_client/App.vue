@@ -3,8 +3,8 @@
 	export default {
 		globalData: {
 			user_id:'',
-			domain_port: 'http://114.115.136.120:8015/',
-			domain:'http://114.115.136.120:8015',
+			domain_port: 'http://brilliantlife.com.cn:8015/',
+			domain:'http://brilliantlife.com.cn:8015',
 			
 			// API 接口
 			api_login: 'user_login/',

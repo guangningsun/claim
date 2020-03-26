@@ -10,6 +10,7 @@
 				</view>
 				<text class="margin-top-sm">扫码领用</text>
 			</view>
+
 			<!-- <view class="cu-item" @tap="onClickHistory">
 				<view class="flex justify-center">
 					<image

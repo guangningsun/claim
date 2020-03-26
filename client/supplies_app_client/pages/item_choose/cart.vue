@@ -100,7 +100,7 @@ export default {
 					selectedIconPath: '/static/submit1.png',
 					text: '提交选择',
 					active: true
-				},
+				}
 				// {
 				// 	iconPath: '/static/order.png',
 				// 	selectedIconPath: '/static/order.png',
@@ -113,23 +113,24 @@ export default {
 	onLoad() {
 		this.requestWithMethod(
 			getApp().globalData.api_asset,
-			"GET",
+			'GET',
 			'',
 			this.successCb,
 			this.failCb,
-			this.completeCb);
+			this.completeCb
+		);
 	},
 	methods: {
 		successCb(rsp) {
-			console.log('success cb')
+			console.log('success cb');
 			if (rsp.data.error === 0) {
 				let repList = rsp.data.msg.asset_info;
 
-				let newArr = repList.map((item,stock,number) =>{
-				   return Object.assign(item,{stock:stock},{number:0})
+				let newArr = repList.map((item, stock, number) => {
+					return Object.assign(item, { stock: stock }, { number: 0 });
 				});
-				newArr.map((item) => {
-					item.stock = parseInt(item.asset_count)
+				newArr.map(item => {
+					item.stock = parseInt(item.asset_count);
 				});
 				console.log(newArr);
 				this.cartList = newArr;
@@ -168,22 +169,36 @@ export default {
 		},
 
 		successCallback(rsp) {
-			console.log('success cb')
+			console.log('success cb');
 			if (rsp.data.error === 0) {
+				// wx.showToast({
+				// 	title:rsp.data.msg,
+				// 	complete: () => {
+				// 		uni.navigateTo({
+				// 			url: '../index/index'
+				// 		});
+				// 	}
+				// });
 				uni.showToast({
-					title:'提交成功!'
+					title: rsp.data.msg,
+					complete: () => {
+						setTimeout(function() {
+							 uni.navigateBack({
+							 	delta: 1
+							 });
+						}, 1500)
+					}
 				});
-				uni.navigateTo({
-					url:'../index/index'
-				});
+			} else if (rsp.data.error === 1) {
+				this.showToast(rsp.data.msg);
 			}
 		},
 		failCallback(err) {
+			uni.hideLoading();
 			console.log('api_claim_asset failed', err);
-			this.showToast(err)
+			this.showToast(err);
 		},
 		completeCallback(rsp) {
-			uni.hideLoading();
 		},
 
 		submit() {
@@ -191,20 +206,26 @@ export default {
 				title: '正在提交'
 			});
 
-			let itemList = this.cartList.filter((item)=>{return item.number>0});
+			let itemList = this.cartList.filter(item => {
+				return item.number > 0;
+			});
 
 			console.log(itemList);
 
 			let cat = uni.getStorageSync('key_cat');
-			let result_list = itemList.map((item) =>{
-			   return Object.assign({claim_count:item.number},{claim_name:item.asset_name},{category:cat})
+			let result_list = itemList.map(item => {
+				return Object.assign(
+					{ claim_count: item.number },
+					{ claim_name: item.asset_name },
+					{ category: cat }
+				);
 			});
-			
+
 			console.log(result_list);
-			
+
 			let params = {
-				choose_list : result_list,
-			}
+				choose_list: JSON.stringify(result_list)
+			};
 
 			this.requestWithMethod(
 				getApp().globalData.api_claim_asset,
@@ -214,8 +235,7 @@ export default {
 				this.failCallback,
 				this.completeCallback
 			);
-		},
-		
+		}
 	}
 };
 </script>
