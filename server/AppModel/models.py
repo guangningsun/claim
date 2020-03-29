@@ -42,6 +42,15 @@ class AssetInfo(models.Model):
     
 
 class ClaimRecord(models.Model):
+    STATUS_CHOICES = [
+    ('0', '待主管审批'),
+    ('1', '待综合办主管审批'),
+    ('2', '待管理员审批'),
+    ('3', '审批完成'),
+    ('4', '已发放'),
+    ('5', '未批准'),
+    ]
+    # fire_rating_number = (('0', u'一级'), ('1', u'二级'))
     # claim_username = models.CharField(max_length=200,verbose_name='申领人')
     # claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
@@ -49,10 +58,19 @@ class ClaimRecord(models.Model):
     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
     claim_date = models.DateField(default=datetime.date.today,verbose_name='申领时间')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
+    approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
 
     class Meta:
         verbose_name = '领用记录'
         verbose_name_plural = '领用记录'
+        # 自定义的权限，两参数分别是权限的名字和权限的描述
+        permissions = (
+            ("supervisor_approval", "第一主管审批"),
+            ("director_approval", "办公室主任审批"),
+            ("admin_approval", "管理员审批通过，等待发放"),
+            ("issued_asset", "发放审批"),
+            ("rejectted", "审批不通过"), 
+        )
 
 
 # 组织机构详细信息
