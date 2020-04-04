@@ -88,7 +88,7 @@ class Post(models.Model):
 #物品分类
 class CommodityCategory(MPTTModel):
       name = models.CharField(max_length=50, unique=True,verbose_name='名称')
-      parent = TreeForeignKey('self', null=True, blank=True,on_delete=models.CASCADE, related_name='children', db_index=True,verbose_name='上级分类')
+      parent = TreeForeignKey('self' ,null=True, blank=True,on_delete=models.CASCADE, related_name='children', db_index=True,verbose_name='上级分类')
       slug = models.SlugField(verbose_name='标签')
       image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
     

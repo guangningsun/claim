@@ -134,6 +134,12 @@ def commoditycategory_detail(request):
     if request.method == 'GET':
         commoditycategoryset = CommodityCategory.objects.all()
         serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
+        # import pdb;pdb.set_trace()
+        for i in range(0,len(serializer.data)):
+            if serializer.data[i]['parent'] == None:
+                serializer.data[i]['parent'] = '-'
+            if serializer.data[i]['image'] == None:
+                serializer.data[i]['image'] = '-'
         res_json = {"error": 0,"msg": {
                     "commoditycategory": serializer.data }}
         return Response(res_json)
