@@ -8,6 +8,7 @@ from AppModel import admin as appadmin
 
 urlpatterns = [
     url('admin/', admin.site.urls),
+    path('weixin_sns/<js_code>', views.weixin_sns),
     re_path(r'^media/(?P<path>.+)$', serve, {'document_root': settings.MEDIA_ROOT}),
     path('asset/', views.asset_detail),
     path('userinfo/', views.userinfo_detail),

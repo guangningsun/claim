@@ -17,6 +17,7 @@ import hashlib,urllib,random,logging,requests,base64
 import json,time,django_filters,xlrd,uuid
 from rest_framework import status
 import time, datetime
+import requests
 
 
 logger = logging.getLogger(__name__)
@@ -144,3 +145,14 @@ def commoditycategory_detail(request):
                     "commoditycategory": serializer.data }}
         return Response(res_json)
     
+
+# weixin sdk
+@api_view(['POST'])
+def weixin_sns(request,js_code):
+    if request.method == 'POST':
+        APPID = 'wx1010e77892dd6991'
+        SECRET = '16704cf51186b336da15ed9f67cc7401'
+        JSCODE = js_code
+        requst_data = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code"
+        req = requests.get(requst_data)
+        return HttpResponse(json.dumps(json.loads(req.content)),content_type='application/json',)
