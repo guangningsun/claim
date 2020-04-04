@@ -85,6 +85,37 @@ class Post(models.Model):
       def __str__(self):
           return self.name
 
+#物品分类
+class CommodityCategory(MPTTModel):
+      name = models.CharField(max_length=50, unique=True,verbose_name='名称')
+      parent = TreeForeignKey('self', null=True, blank=True,on_delete=models.CASCADE, related_name='children', db_index=True,verbose_name='上级分类')
+      slug = models.SlugField(verbose_name='标签')
+      image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
+    
+      class MPTTMeta:
+        order_insertion_by = ['name']
+    
+      class Meta:
+        unique_together = (('parent', 'slug',))
+        verbose_name_plural = 'categories'
+        verbose_name = '物品分类'
+    
+      def get_slug_list(self):
+        try:
+          ancestors = self.get_ancestors(include_self=True)
+        except:
+          ancestors = []
+        else:
+          ancestors = [ i.slug for i in ancestors]
+        slugs = []
+        for i in range(len(ancestors)):
+          slugs.append('/'.join(ancestors[:i+1]))
+        return slugs
+    
+      def __str__(self):
+        return self.name
+
+
 
 # 组织机构
 class Category(MPTTModel):

@@ -159,6 +159,12 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Category , MPTTModelAdmin)
 
 
+admin.site.register(CommodityCategory , MPTTModelAdmin)
+# @admin.register(CommodityCategory)
+# class CommodityCategoryAdmin(admin.ModelAdmin):
+#     list_display = ['name','parent','slug','image']
+#     list_per_page = 10
+
 admin.site.site_title = "物品申领后台管理"
 admin.site.site_header = "物品申领"
 

@@ -20,3 +20,10 @@ class ClaimSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClaimRecord
         fields = ('claim_username','claim_count','claim_phone_num','claim_name','claim_date','category')
+
+
+class CommodityCategorySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CommodityCategory
+        fields = ('id','name','parent','slug','image')

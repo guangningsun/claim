@@ -128,3 +128,13 @@ def claim_detail(request,sn):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 物品分类管理
+@api_view(['GET'])
+def commoditycategory_detail(request):
+    if request.method == 'GET':
+        commoditycategoryset = CommodityCategory.objects.all()
+        serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "commoditycategory": serializer.data }}
+        return Response(res_json)
+    

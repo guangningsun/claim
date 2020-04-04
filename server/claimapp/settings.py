@@ -47,21 +47,24 @@ INSTALLED_APPS = [
     'AppModel',
     'corsheaders',
     'mptt',
+    'django_extensions',
+    'werkzeug_debugger_runserver',
+    # 'djangosecure',
 ]
 
 # env need pip install django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
-    # 'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'dwebsocket.middleware.WebSocketMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'claimapp.urls'
@@ -178,6 +181,10 @@ SIMPLEUI_CONFIG = {
             'name': '用户管理',
             'url': 'AppModel/userinfo/',
             'icon': 'fa fa-user-circle'
+        }, {
+            'name': '物品分类管理',
+            'url': 'AppModel/commoditycategory/',
+            'icon': 'far fa-surprise'
         }]
         },{
         'app': 'auth',
@@ -199,3 +206,8 @@ MPTT_ADMIN_LEVEL_INDENT = 20
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
