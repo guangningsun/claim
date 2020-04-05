@@ -155,4 +155,10 @@ def weixin_sns(request,js_code):
         JSCODE = js_code
         requst_data = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code"
         req = requests.get(requst_data)
-        return HttpResponse(json.dumps(json.loads(req.content)),content_type='application/json',)
+        if req.status_code == 200:
+            openid = json.loads(req.content)['openid']
+            return Response(_generate_json_message(True,openid))
+        else:
+            return Response(_generate_json_message(False,"cod 无效"))
+        # return HttpResponse(json.dumps(json.loads(req.content)),content_type='application/json',)
+
