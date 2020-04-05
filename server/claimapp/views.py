@@ -174,7 +174,7 @@ def weixin_gusi(request):
         appId = 'wx1010e77892dd6991'
         openid = request.POST['openid']
         try:
-            sessionKey = WeixinSessionKey.objects.filter(weixin_openid=openid).weixin_sessionkey
+            sessionKey = WeixinSessionKey.objects.get(weixin_openid=openid).weixin_sessionkey
             encryptedData = request.POST['encryptedData']
             iv = request.POST['iv']
             pc = WXBizDataCrypt(appId, sessionKey)
