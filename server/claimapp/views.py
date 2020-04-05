@@ -178,6 +178,9 @@ def weixin_gusi(request):
             encryptedData = request.POST['encryptedData']
             iv = request.POST['iv']
             pc = WXBizDataCrypt(appId, sessionKey)
-            print (pc.decrypt(encryptedData, iv))
+            # print (pc.decrypt(encryptedData, iv))
+            import pdb;pdb.set_trace()
+            return HttpResponse("{\"error\":0,\"msg\":\""+pc.decrypt(encryptedData, iv)+"\"}",
+                            content_type='application/json',)
         except:
             pass
