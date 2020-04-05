@@ -18,7 +18,7 @@ import json,time,django_filters,xlrd,uuid
 from rest_framework import status
 import time, datetime
 import requests
-import AppModel.WXBizDataCrypt as WXBizDataCrypt
+from AppModel.WXBizDataCrypt import WXBizDataCrypt 
 
 
 logger = logging.getLogger(__name__)
