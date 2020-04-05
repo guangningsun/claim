@@ -61,13 +61,15 @@ def claim_asset(request):
         # claim_username = request.POST['claim_username']
         # import pdb;pdb.set_trace()
         claim_list = request.POST['choose_list']
+        category = request.POST['category']
         try:
+            cr = ClaimRecord(category=Category.objects.get(id=category))
+            cr.save()
             for claim_submmit in json.loads(claim_list):
                 claim_count = claim_submmit['claim_count']
                 # claim_phone_num = request.POST['claim_phone_num']
                 claim_name = claim_submmit['claim_name']
-                category = claim_submmit['category']
-                
+                # category = claim_submmit['category']
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
                 # import pdb;pdb.set_trace()
                 # 查看申领物品剩余是否足量
@@ -80,15 +82,14 @@ def claim_asset(request):
                 # 资产管理减少指定数量物品
                 assetinfo.save()
                 # 创建申领记录
-                claimrecord = ClaimRecord(
-                                        # claim_username=claim_username,
-                                        # claim_weixin_id=weixin_id,
-                                        claim_count=claim_count,
-                                        # claim_phone_num=claim_phone_num,
-                                        claim_name=claim_name,
-                                        category=Category.objects.get(id=category),
-                                        )
-                claimrecord.save()
+                cs = Claimlist(claim_count=claim_count,claim_name=claim_name)
+                cs.save()
+                cr.claim_list.add(cs)
+                
+            # claimrecord = ClaimRecord(claim_list=claim_obj_list, 
+                                    # category=Category.objects.get(id=category))
+            cr.category=Category.objects.get(id=category)
+            cr.save()
             return _generate_json_message(True, "申领成功")
         except :
             return _generate_json_message(False, "仓库中没有该类型商品")
@@ -115,9 +116,10 @@ def userinfo_detail(request):
 
 # 个人申领历史记录
 @api_view(['GET', 'POST'])
-def claim_detail(request,sn):
+def claim_detail(request):
     if request.method == 'GET':
-        claimset = ClaimRecord.objects.filter(claim_weixin_id=sn)
+        # claimset = ClaimRecord.objects.filter(claim_weixin_id=sn)
+        claimset = ClaimRecord.objects.all()
         serializer = ClaimSerializer(claimset, many=True)
         res_json = {"error": 0,"msg": {
                     "claim_record_info": serializer.data }}
@@ -185,9 +187,7 @@ def weixin_gusi(request):
             encryptedData = request.POST['encryptedData']
             iv = request.POST['iv']
             pc = WXBizDataCrypt(appId, sessionKey)
-            # print (pc.decrypt(encryptedData, iv))
-            import pdb;pdb.set_trace()
-            return HttpResponse("{\"error\":0,\"msg\":\""+pc.decrypt(encryptedData, iv)+"\"}",
-                            content_type='application/json',)
+            # 增加创建用户动作 openid phonenumber nickname
+            return HttpResponse(json.dumps(pc.decrypt(encryptedData, iv)),content_type='application/json')
         except:
             pass

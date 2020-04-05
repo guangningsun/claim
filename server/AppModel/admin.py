@@ -40,13 +40,13 @@ class AssetInfoAdmin(ImportExportModelAdmin):
 @admin.register(ClaimRecord)
 class ClaimRecordAdmin(ImportExportModelAdmin):
     # list_display=['claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category']
-    list_display=['claim_count','claim_name','claim_date','category',"approval_status"]
-    # list_editable = ['claim_username','claim_count','claim_phone_num','claim_name','claim_date','category']
-    search_fields =('claim_count','claim_name','claim_date','category',"approval_status")
+    # list_display=['claim_count','claim_name','claim_date','category',"approval_status"]
+    list_display=['id','claim_date','category',"approval_status"]
+    # search_fields =('claim_count','claim_name','claim_date','category',"approval_status")
     fieldsets = [
-       ('用户数据', {'fields': ['claim_count','claim_name','claim_date','category',"approval_status"], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['claim_date','category',"approval_status"], 'classes': ['collapse']}),
     ]
-    list_display_links = ('claim_name',)
+    list_display_links = ('id',)
     list_per_page = 15
     actions = ["supervisor_approval",'director_approval',"admin_approval",'issued_asset','rejectted']
     

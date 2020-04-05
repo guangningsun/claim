@@ -41,6 +41,11 @@ class AssetInfo(models.Model):
         verbose_name_plural = '物品信息'
     
 
+class Claimlist(models.Model):
+    claim_count = models.CharField(max_length=200,verbose_name='申领数量')
+    claim_name = models.CharField(max_length=200,verbose_name='物品名称')
+
+
 class ClaimRecord(models.Model):
     STATUS_CHOICES = [
     ('0', '待主管审批'),
@@ -50,12 +55,13 @@ class ClaimRecord(models.Model):
     ('4', '已发放'),
     ('5', '未批准'),
     ]
-    # fire_rating_number = (('0', u'一级'), ('1', u'二级'))
     # claim_username = models.CharField(max_length=200,verbose_name='申领人')
     # claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
-    claim_count = models.CharField(max_length=200,verbose_name='申领数量')
+    # claim_count = models.CharField(max_length=200,verbose_name='申领数量')
     # claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
-    claim_name = models.CharField(max_length=200,verbose_name='物品名称')
+    # claim_name = models.CharField(max_length=200,verbose_name='物品名称')
+    # id = models.CharField(max_length=200,verbose_name='订单id',primary_key=True)
+    claim_list = models.ManyToManyField(Claimlist) 
     claim_date = models.DateField(default=datetime.date.today,verbose_name='申领时间')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
     approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
