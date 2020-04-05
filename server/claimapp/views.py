@@ -159,8 +159,15 @@ def weixin_sns(request,js_code):
         if req.status_code == 200:
             openid = json.loads(req.content)['openid']
             session_key = json.loads(req.content)['session_key']
-            WeixinSessionKey.objects.update_or_create(weixin_openid=openid,
-                                                    weixin_sessionkey=session_key,)
+            # WeixinSessionKey.objects.update_or_create(weixin_openid=openid,
+            #                                         weixin_sessionkey=session_key)
+            try:
+                wsk = WeixinSessionKey.objects.get(weixin_openid=openid)
+                wsk.weixin_sessionkey = session_key
+                wsk.save()
+            except WeixinSessionKey.DoesNotExist:
+                cwsk = WeixinSessionKey(weixin_openid=openid,weixin_sessionkey=session_key)
+                cwsk.save()
             return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\"}",
                             content_type='application/json',)
         else:
