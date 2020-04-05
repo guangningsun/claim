@@ -147,3 +147,11 @@ class Category(MPTTModel):
         return self.name
 
 
+class WeixinSessionKey(models.Model):
+    weixin_openid = models.CharField(max_length=200,verbose_name='openid')
+    weixin_sessionkey = models.CharField(max_length=200,verbose_name='sessionkey')
+    update_time = models.DateTimeField(auto_now=True,verbose_name='更新时间')
+
+    class Meta:
+        verbose_name = '微信用户SK'
+        verbose_name_plural = '微信用户SK'

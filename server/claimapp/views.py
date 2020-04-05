@@ -18,6 +18,7 @@ import json,time,django_filters,xlrd,uuid
 from rest_framework import status
 import time, datetime
 import requests
+import AppModel.WXBizDataCrypt as WXBizDataCrypt
 
 
 logger = logging.getLogger(__name__)
@@ -146,7 +147,7 @@ def commoditycategory_detail(request):
         return Response(res_json)
     
 
-# weixin sdk
+# weixin 登录
 @api_view(['POST'])
 def weixin_sns(request,js_code):
     if request.method == 'POST':
@@ -157,11 +158,26 @@ def weixin_sns(request,js_code):
         req = requests.get(requst_data)
         if req.status_code == 200:
             openid = json.loads(req.content)['openid']
-
+            session_key = json.loads(req.content)['session_key']
+            WeixinSessionKey.objects.update_or_create(weixin_openid=weixin_openid,
+                                                    weixin_sessionkey=session_key,)
             return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\"}",
-                            content_type='application/json',
-                            )
+                            content_type='application/json',)
         else:
             return Response(_generate_json_message(False,"code 无效"))
         # return HttpResponse(json.dumps(json.loads(req.content)),content_type='application/json',)
 
+# weixin 获取用户信息
+@api_view(['POST'])
+def weixin_gusi(request):
+    if request.method == 'POST':
+        appId = 'wx1010e77892dd6991'
+        openid = request.POST['openid']
+        try:
+            sessionKey = WeixinSessionKey.objects.filter(weixin_openid=openid).weixin_sessionkey
+            encryptedData = request.POST['encryptedData']
+            iv = request.POST['iv']
+            pc = WXBizDataCrypt(appId, sessionKey)
+            print (pc.decrypt(encryptedData, iv))
+        except:
+            pass
