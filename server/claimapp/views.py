@@ -157,8 +157,9 @@ def weixin_sns(request,js_code):
         req = requests.get(requst_data)
         if req.status_code == 200:
             openid = json.loads(req.content)['openid']
-            res_data = {"openid":""+openid+""}
-            return Response(_generate_json_message(True,res_data))
+            return HttpResponse("{\"error\":0,\"msg\":\""+message+"\",\"openid\":\""+openid+"\"}",
+                            content_type='application/json',
+                            )
         else:
             return Response(_generate_json_message(False,"code 无效"))
         # return HttpResponse(json.dumps(json.loads(req.content)),content_type='application/json',)
