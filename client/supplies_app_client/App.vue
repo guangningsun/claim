@@ -3,14 +3,19 @@
 	export default {
 		globalData: {
 			user_id:'',
-			domain_port: 'http://brilliantlife.com.cn:8015/',
-			domain:'http://brilliantlife.com.cn:8015',
+			domain_port: 'https://brilliantlife.com.cn/',
+			domain:'https://brilliantlife.com.cn',
 			
 			// API 接口
-			api_login: 'user_login/',
+			api_login: 'weixin_sns/',
 			api_asset: 'asset/',
 			api_claim_asset: 'claim_asset/',
+			api_category: 'commoditycategory/',
+			api_approve: 'approve/',
+			api_getWXInfo: 'weixin_gusi/',
 			
+			// 物品篮物品
+			cart_list_info: [],
 		},
 
 		onLaunch: function() {

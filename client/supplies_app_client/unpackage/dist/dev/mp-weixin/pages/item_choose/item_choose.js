@@ -51,8 +51,6 @@ var component = Object(_Applications_HBuilderX_app_Contents_HBuilderX_plugins_un
   renderjs
 )
 
-/* hot reload */
-if (false) { var api; }
 component.options.__file = "Users/victor/HBuilderProjects/supplies_app/claim/client/supplies_app_client/pages/item_choose/item_choose.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 

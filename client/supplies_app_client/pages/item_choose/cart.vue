@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<cu-custom bgColor="bg-gradual-green" :isBack="true">
-			<block slot="content">物品选择</block>
+			<block slot="content">物品篮</block>
 		</cu-custom>
 		<view class="margin-xl"></view>
 		<view v-for="(item, index) in cartList" :key="index">
@@ -107,7 +107,9 @@ export default {
 				// 	text: '我的申领',
 				// 	active: false
 				// }
-			]
+			],
+			catagory_num_limit: 5,
+			item_limit: 5
 		};
 	},
 	onLoad() {
@@ -183,10 +185,10 @@ export default {
 					title: rsp.data.msg,
 					complete: () => {
 						setTimeout(function() {
-							 uni.navigateBack({
-							 	delta: 1
-							 });
-						}, 1500)
+							uni.navigateBack({
+								delta: 1
+							});
+						}, 1500);
 					}
 				});
 			} else if (rsp.data.error === 1) {
@@ -198,10 +200,18 @@ export default {
 			console.log('api_claim_asset failed', err);
 			this.showToast(err);
 		},
-		completeCallback(rsp) {
+		completeCallback(rsp) {},
+
+		getCartCataNum() {
+			let result = 0;
+			for (var i = 0; i < this.cartList.length; i++) {
+				this.cartList[i];
+			}
 		},
 
 		submit() {
+			// if()
+
 			uni.showLoading({
 				title: '正在提交'
 			});
@@ -217,6 +227,7 @@ export default {
 				return Object.assign(
 					{ claim_count: item.number },
 					{ claim_name: item.asset_name },
+					{ id: item.id },
 					{ category: cat }
 				);
 			});

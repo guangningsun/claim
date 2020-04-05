@@ -64,8 +64,6 @@ var component = Object(_Applications_HBuilderX_app_Contents_HBuilderX_plugins_un
   renderjs
 )
 
-/* hot reload */
-if (false) { var api; }
 component.options.__file = "Users/victor/HBuilderProjects/supplies_app/claim/client/supplies_app_client/pages/index/index.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
@@ -172,98 +170,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
-    return {};
+    return {
+      openid: '',
+      headImg: '../../static/submit1.png',
+      user_nickname: '' };
+
   },
   onLoad: function onLoad() {},
-  onShow: function onShow() {
-    // uni.login({
-    // 	provider: 'weixin',
-    // 	success: function(loginRes) {
-    // 		console.log('+++code：' + loginRes.code);
+  onShow: function onShow() {var _this = this;
+    uni.login({
+      provider: 'weixin',
+      success: function success(loginRes) {
+        console.log('+++code：' + loginRes.code);
 
-    // 		uni.setStorage({
-    // 			key: 'key_wx_code',
-    // 			data: loginRes.code
-    // 		});
-    // 	}
-    // });
+        _this.requestWithMethod(
+        getApp().globalData.api_login + loginRes.code,
+        'POST',
+        '',
+        _this.successCb,
+        _this.failCb,
+        _this.completeCb);
 
-    //1.调用登录接口
-    // wx.login({
-    // 	success: res => {
-    // 		wx.getUserInfo({
-    // 			success: function(res) {
-    // 				that.globalData.userInfo = res.userInfo;
-    // 				// typeof cb == 'function' && cb(that.globalData.userInfo, true);
-    // 				console.log(res.userInfo);
-    // 			},
-    // 			fail: function() {
-    // 				//2.第一次登陆不强制授权，直接返回
-    // 				// if (loginType == 0) {
-    // 				// 	typeof cb == 'function' && cb(that.globalData.userInfo, false);
-    // 				// } else {
-    // 				//3.授权友好提示
-    // 				wx.showModal({
-    // 					title: '提示',
-    // 					content: '您还未授权登陆，部分功能将不能使用，是否重新授权？',
-    // 					showCancel: true,
-    // 					cancelText: '否',
-    // 					confirmText: '是',
-    // 					success: function(res) {
-    // 						//4.确认授权调用wx.openSetting
-    // 						if (res.confirm) {
-    // 							if (wx.openSetting) {
-    // 								//当前微信的版本 ，是否支持openSetting
-    // 								wx.openSetting({
-    // 									success: res => {
-    // 										if (res.authSetting['scope.userInfo']) {
-    // 											//如果用户重新同意了授权登录
-    // 											wx.getUserInfo({
-    // 												success: function(res) {
-    // 													// that.globalData.userInfo = res.userInfo;
-    // 													console.log(res.userInfo);
-    // 												}
-    // 											});
-    // 										} else {
-    // 											//用户还是拒绝
-    // 											// typeof cb == 'function' &&
-    // 											// 	cb(that.globalData.userInfo, false);
-    // 												console.log("用户还是拒绝");
-    // 										}
-    // 									},
-    // 									fail: function() {
-    // 										// //调用失败，授权登录不成功
-    // 										// typeof cb == 'function' &&
-    // 										// 	cb(that.globalData.userInfo, false);
-    // 											console.log("调用失败，授权登录不成功");
-    // 									}
-    // 								});
-    // 							} else {
-    // 								console.log("当前微信的版本 ，不支持openSetting");
-    // 							}
-    // 						} else {
-    // 							console.log("不confirm");
-    // 						}
-    // 					}
-    // 				});
-    // 				// }
-    // 			}
-    // 		});
-    // 	},
-    // 	fail: res => {}
-    // });
+      } });
+
   },
   methods: {
-    onClickScan: function onClickScan() {var _this = this;
+
+    successCb: function successCb(rsp) {
+      console.log(rsp);
+
+      if (rsp.data.error === 0) {
+        this.openid = rsp.data.openid;
+        uni.setStorage({
+          key: 'key_wx_openid',
+          data: rsp.data.openid });
+
+      }
+    },
+    failCb: function failCb(err) {
+      console.log('api_login failed', err);
+    },
+    completeCb: function completeCb(rsp) {},
+
+    onClickScan: function onClickScan() {var _this2 = this;
       uni.scanCode({
         onlyFromCamera: true,
         success: function success(res) {
           console.log('条码类型：' + res.scanType);
           console.log('条码内容：' + res.result);
-          if (_this.containsStr(res.result, 'http')) {
+          if (_this2.containsStr(res.result, 'http')) {
             var cat = res.result.split('/');
 
             uni.setStorageSync('key_cat', cat[cat.length - 1]);
@@ -283,9 +248,65 @@ var _default =
     },
     onGotUserInfo: function onGotUserInfo(e) {
       console.log(e);
+      console.log(e.detail.userInfo.avatarUrl);
+      this.headImg = e.detail.userInfo.avatarUrl;
+      this.user_nickname = e.detail.userInfo.nickName;
+      uni.setStorage({
+        key: 'key_user_head',
+        data: e.detail.userInfo.avatarUrl });
+
+      uni.setStorage({
+        key: 'key_user_nickname',
+        data: e.detail.userInfo.nickName });
+
     },
+
+    ///////////////
+
+    successPhoneCb: function successPhoneCb(rsp) {
+      console.log('api_phone success');
+      if (this.containsStr(rsp.errMsg, "ok")) {
+        uni.setStorage({
+          key: 'key_phone_num',
+          data: rsp.data.purePhoneNumber });
+
+      }
+    },
+    failPhoneCb: function failPhoneCb(err) {
+      console.log('api_phone failed', err);
+    },
+    completePhoneCb: function completePhoneCb(rsp) {},
+
     getPhoneNumber: function getPhoneNumber(e) {
       console.log(e);
+      console.log('getPhoneNumber=====');
+
+      var that = this;
+      // 拒绝授权
+      if (e.detail.errMsg == 'getPhoneNumber:fail user deny') {
+        uni.showModal({
+          title: '提示',
+          showCancel: false,
+          content: '未授权将无法登录',
+          success: function success(res) {
+
+          } });
+
+      } else {
+        var params = {
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv,
+          openid: this.openid };
+
+        this.requestWithMethod(
+        getApp().globalData.api_getWXInfo,
+        'POST',
+        params,
+        this.successPhoneCb,
+        this.failPhoneCb,
+        this.completePhoneCb);
+
+      }
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

@@ -16,7 +16,35 @@
 			"path": "pages/item_choose/cart",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/category/category",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/cart/cart",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/approve/approve",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/approve/approve_detail",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/me/me",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/auth",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/category/category_detail_list",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */
