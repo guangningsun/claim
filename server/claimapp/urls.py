@@ -20,6 +20,8 @@ urlpatterns = [
     path('claim_asset/<int:weixin_id>', views.claim_asset),
     path('claim_asset/', views.claim_asset),
     path('commoditycategory/', views.commoditycategory_detail),
+    path('get_approval_list/', views.get_approval_list),
+    
     
     # url(r'^favicon\.ico/pre>, RedirectView.as_view(url=r'static/favicon.ico')),
 

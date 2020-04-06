@@ -138,7 +138,36 @@ def claim_detail(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['POST'])
+def get_approval_list(request):
+    if request.method == 'POST':
+        openid = request.POST['openid']
+        auth = request.POST['auth']
+        
+        # 待主管审批
+        if auth == "1":
+        # 查询管理员所在部门
+            cid = UserInfo.objects.get(weixin_openid=openid).category
+            claimset = ClaimRecord.objects.filter(approval_status=0).filter(category=cid)
+            serializer = ClaimSerializer(claimset, many=True)
+            res_json = {"error": 0,"msg": {
+                        "approval_list_info": serializer.data }}
+            return Response(res_json)
+        # 待主任审批
+        elif auth == "2":
+            claimset = ClaimRecord.objects.filter(approval_status=1)
+            serializer = ClaimSerializer(claimset, many=True)
+            res_json = {"error": 0,"msg": {
+                        "approval_list_info": serializer.data }}
+            return Response(res_json)
+        # 待管理员审理
+        elif auth == "3":
+            claimset = ClaimRecord.objects.filter(approval_status=2)
+            serializer = ClaimSerializer(claimset, many=True)
+            res_json = {"error": 0,"msg": {
+                        "approval_list_info": serializer.data }}
+            return Response(res_json)
+   
 # 物品分类管理
 @api_view(['GET'])
 def commoditycategory_detail(request):
