@@ -27,7 +27,7 @@ class UserInfo(models.Model):
         verbose_name_plural = '用户信息'
     
     def __str__(self):
-        return self.username
+        return self.user_name
 
 
 class AssetInfo(models.Model):

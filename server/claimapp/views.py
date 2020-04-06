@@ -194,8 +194,8 @@ def weixin_gusi(request):
             encryptedData = request.POST['encryptedData']
             iv = request.POST['iv']
             pc = WXBizDataCrypt(appId, sessionKey)
-            res_data = json.dumps(pc.decrypt(encryptedData, iv))
-            import pdb;pdb.set_trace()
+            res_data = pc.decrypt(encryptedData, iv)
+            phone_number = res_data["phoneNumber"]
             # 增加创建用户动作 openid phonenumber nickname
             try:
                 # 用户登录时判断用户是否存在
@@ -203,12 +203,10 @@ def weixin_gusi(request):
             except UserInfo.DoesNotExist:
                 # 不存在则创建新用户
                 userinfo = UserInfo(weixin_openid=openid,
-                                    phone_number="11111111",
+                                    phone_number=phone_number,
                                     auth="0")
                 userinfo.save()
-            
-            
-            return HttpResponse(res_data,content_type='application/json')
+            return HttpResponse(json.dumps(res_data),content_type='application/json')
         except:
             pass
 
