@@ -79,6 +79,7 @@ class ClaimRecord(models.Model):
     claim_date = models.DateField(default=datetime.date.today,verbose_name='申领时间')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
     approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
+    desc =  models.CharField(max_length=200, verbose_name='申请理由',default="无理由")
 
     class Meta:
         verbose_name = '领用记录'
