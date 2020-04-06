@@ -199,7 +199,7 @@ def weixin_gusi(request):
             # 增加创建用户动作 openid phonenumber nickname
             try:
                 # 用户登录时判断用户是否存在
-                UserInfo.objects.filter(weixin_openid=openid)
+                UserInfo.objects.get(weixin_openid=openid)
             except UserInfo.DoesNotExist:
                 # 不存在则创建新用户
                 userinfo = UserInfo(weixin_openid=openid,
