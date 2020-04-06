@@ -73,6 +73,7 @@ def claim_asset(request):
         # import pdb;pdb.set_trace()
         claim_list = request.POST['choose_list']
         category = request.POST['category']
+        reason = request.POST['reason']
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
@@ -97,6 +98,7 @@ def claim_asset(request):
                 cr.claim_list.add(cs)
             # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
+            cr.desc = reason
             cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
