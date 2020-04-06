@@ -53,6 +53,16 @@ def asset_detail(request):
                     "asset_info": serializer.data }}
         return Response(res_json)
 
+# 通过物品分类 category id获取商品列表
+@api_view(['GET'])
+def asset_by_cid(request,cid):
+    if request.method == 'GET':
+        assetset = AssetInfo.objects.filter(asset_ccategory=cid)
+        serializer = AssetSerializer(assetset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "asset_info": serializer.data }}
+        return Response(res_json)
+
 
 # 物品申领功能
 @api_view(['POST'])

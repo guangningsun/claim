@@ -13,6 +13,7 @@ urlpatterns = [
     
     re_path(r'^media/(?P<path>.+)$', serve, {'document_root': settings.MEDIA_ROOT}),
     path('asset/', views.asset_detail),
+    path('asset/<int:cid>', views.asset_by_cid),
     path('userinfo/', views.userinfo_detail),
     # path('record_list/<int:sn>', views.claim_detail),
     path('record_list/', views.claim_detail),
