@@ -52,9 +52,10 @@ class AssetInfo(models.Model):
 class Claimlist(models.Model):
     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
+    claim_unit =  models.CharField(max_length=200,verbose_name='物品名称')
 
     def __str__(self):
-        return (("%s %s") % (self.claim_name,self.claim_count))
+        return (("%s %s%s") % (self.claim_name,self.claim_count,self.claim_unit))
     
     class Meta:
         verbose_name = '物品清单'

@@ -55,7 +55,7 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
     def get_desc(self, obj):
         if obj.id is not None:
             claim_list = [Claimlist.objects.filter(id = cl.claimlist_id) for cl in MappingClaimLisToRecord.objects.filter(claimrecord_id=obj.id)]
-            return [ (("%s %s") % (cl[0].claim_name,cl[0].claim_count)) for cl in claim_list]
+            return [ (("%s %s%s") % (cl[0].claim_name,cl[0].claim_count,cl[0].claim_unit)) for cl in claim_list]
         else:
             return "-"
     get_desc.short_description = "物品清单"

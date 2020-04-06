@@ -53,6 +53,7 @@ def asset_detail(request):
                     "asset_info": serializer.data }}
         return Response(res_json)
 
+
 # 通过物品分类 category id获取商品列表
 @api_view(['GET'])
 def asset_by_cid(request,cid):
@@ -78,6 +79,7 @@ def claim_asset(request):
             for claim_submmit in json.loads(claim_list):
                 claim_count = claim_submmit['claim_count']
                 claim_name = claim_submmit['claim_name']
+                claim_unit = claim_submmit['claim_unit']
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
                 # 查看申领物品剩余是否足量
                 if int(assetinfo.asset_count)<int(claim_count):
@@ -89,7 +91,7 @@ def claim_asset(request):
                 # 资产管理减少指定数量物品
                 assetinfo.save()
                 # 创建申领物品
-                cs = Claimlist(claim_count=claim_count,claim_name=claim_name)
+                cs = Claimlist(claim_count=claim_count,claim_name=claim_name,claim_unit=claim_unit)
                 cs.save()
                 # 申领物品加入该条申领记录中
                 cr.claim_list.add(cs)
@@ -138,6 +140,8 @@ def claim_detail(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# 获取审批列表
 @api_view(['POST'])
 def get_approval_list(request):
     if request.method == 'POST':
@@ -155,7 +159,6 @@ def get_approval_list(request):
                     if k == "claim_list":
                         cl =[]
                         for cli in v:
-                            dic ={}
                             dic[Claimlist.objects.get(id=cli).claim_name]=Claimlist.objects.get(id=cli).claim_count
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
