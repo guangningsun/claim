@@ -147,11 +147,36 @@ def change_approval_status(request):
     if request.method == 'POST':
         openid = request.POST['openid']
         is_rejectted = request.POST['is_rejectted']
+        is_finished = request.POST['is_finished']
         reason = request.POST['reason']
         record_id = request.POST['record_id']
         #通过openid获取该用户所在部门category和权限auth
-        #如果是该部门主管则将状态修改到待管理员审批
-        #
+        try:
+            userinfo = UserInfo.objects.get(weixin_openid=openid)
+            #如果是该部门主管则将状态修改到待管理员审批
+            if userinfo.auth == "1" and is_rejectted:
+                # 主管未通过审批则将状态更改为 5拒绝申请
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.update(approval_status="5",desc=reason)
+            elif userinfo.auth == "1" and not is_rejectted:
+                # 主管通过审批则将状态更改为 2待管理员审批
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.update(approval_status="2")
+            elif userinfo.auth == "3" and not is_rejectted:
+                # 管理员通过审批则将状态改为 3 审批完成待发放
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.update(approval_status="3")
+            elif userinfo.auth == "3" and is_rejectted:
+                # 管理员未通过审批则将状态改为 5拒绝申请
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.update(approval_status="5",desc=reason)
+            
+            if userinfo.auth == "3" and is_finished:
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.update(approval_status="4",desc=reason)
+
+        except:
+            pass
 
 
 
