@@ -41,11 +41,11 @@ class AssetInfoAdmin(ImportExportModelAdmin):
 class ClaimRecordAdmin(ImportExportModelAdmin):
     # list_display=['claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category']
     # list_display=['claim_count','claim_name','claim_date','category',"approval_status"]
-    list_display=['id','claim_date','category',"approval_status","get_desc"]
+    list_display=['id','claim_date','category',"approval_status","get_desc","desc"]
 
     # search_fields =('claim_count','claim_name','claim_date','category',"approval_status")
     fieldsets = [
-       ('用户数据', {'fields': ['claim_date','category',"approval_status"], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['claim_date','category',"approval_status",'desc'], 'classes': ['collapse']}),
     ]
     list_display_links = ('id',)
     list_per_page = 15
