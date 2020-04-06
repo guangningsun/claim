@@ -174,6 +174,9 @@ def change_approval_status(request):
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.update(approval_status="4",desc=reason)
+            
+            res_json = {"error": 0,"msg": "status success changed"}
+            return Response(res_json)
 
         except:
             pass
