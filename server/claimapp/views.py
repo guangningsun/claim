@@ -155,7 +155,9 @@ def get_approval_list(request):
                     if k == "claim_list":
                         cl =[]
                         for cli in v:
-                            cl.append(Claimlist.objects.get(id=cli))
+                            dic ={}
+                            dic[Claimlist.objects.get(id=cli).claim_name]=Claimlist.objects.get(id=cli).claim_count
+                            cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
                     if k == "category":
                         serializer.data[i]['category'] = Category.objects.get(id=v).name
