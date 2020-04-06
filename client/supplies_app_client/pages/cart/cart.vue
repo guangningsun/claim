@@ -189,9 +189,9 @@ export default {
 					title: rsp.data.msg,
 					complete: () => {
 						setTimeout(function() {
-							uni.navigateBack({
-								delta: 1
-							});
+							uni.navigateTo({
+								url:'../category/category'
+							})
 						}, 1500);
 					}
 				});
@@ -236,15 +236,15 @@ export default {
 				return Object.assign(
 					{ claim_count: item.number },
 					{ claim_name: item.asset_name },
-					{ id: item.id },
-					{ category: cat }
+					{ id: item.id }
 				);
 			});
 
 			console.log(result_list);
 
 			let params = {
-				choose_list: JSON.stringify(result_list)
+				choose_list: JSON.stringify(result_list),
+				category: cat
 			};
 
 			this.requestWithMethod(

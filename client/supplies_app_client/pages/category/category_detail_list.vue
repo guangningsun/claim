@@ -147,7 +147,7 @@ export default {
 	methods: {
 		loadData() {
 			this.requestWithMethod(
-				getApp().globalData.api_asset,
+				getApp().globalData.api_asset + this.cateId,
 				'GET',
 				'',
 				this.successCb,

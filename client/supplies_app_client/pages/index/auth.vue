@@ -3,37 +3,40 @@
 		<cu-custom bgColor="bg-gradual-green" :isBack="false">
 			<block slot="content">用品申领平台</block>
 		</cu-custom>
-		<view class="cu-list grid col-1 no-border" style="margin-top: 70upx; padding-top: 40upx;">
-			<view class="cu-item" @tap="onClickScan">
-				<view class="flex justify-center">
-					<image src="../../static/scan.png" style="width: 80upx; height: 80upx;"></image>
+		
+		<view v-show="shouldShowContent">
+			<view class="cu-list grid col-1 no-border" style="margin-top: 70upx; padding-top: 40upx;">
+				<view class="cu-item" @tap="onClickScan">
+					<view class="flex justify-center">
+						<image src="../../static/scan.png" style="width: 80upx; height: 80upx;"></image>
+					</view>
+					<text class="margin-top-sm">扫码领用</text>
 				</view>
-				<text class="margin-top-sm">扫码领用</text>
+			
+				<!-- <view class="cu-item" @tap="onClickHistory">
+					<view class="flex justify-center">
+						<image
+							src="../../static/order.png"
+							style="width: 80upx; height: 80upx;"
+						></image>
+					</view>
+					<text class="margin-top-sm">我的领用</text>
+				</view> -->
 			</view>
-
-			<!-- <view class="cu-item" @tap="onClickHistory">
-				<view class="flex justify-center">
-					<image
-						src="../../static/order.png"
-						style="width: 80upx; height: 80upx;"
-					></image>
-				</view>
-				<text class="margin-top-sm">我的领用</text>
-			</view> -->
-		</view>
-
-		<view class="padding">
-			<button
-				class="bg-olive margin-bottom-sm"
-				open-type="getPhoneNumber"
-				lang="zh_CN"
-				@getphonenumber="getPhoneNumber"
-			>
-				手机号一键登录
-			</button>
-			<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
-				微信登录
-			</button>
+			
+			<view class="padding">
+				<button
+					class="bg-olive margin-bottom-sm"
+					open-type="getPhoneNumber"
+					lang="zh_CN"
+					@getphonenumber="getPhoneNumber"
+				>
+					手机号登录
+				</button>
+				<!-- <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
+					微信登录
+				</button> -->
+			</view>
 		</view>
 
 		<!-- 申请手机号modal -->
@@ -45,7 +48,7 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
-				<view class="padding-xl">需要使用手机号进行注册登录才可正常使用</view>
+				<view class="padding-xl">需要使用手机号进行登录才可正常使用</view>
 				<view class="cu-bar bg-white">
 					<view class="flex justify-end action">
 						<button class="cu-btn text-gray" @tap="hideModal">取消</button>
@@ -55,7 +58,7 @@
 							lang="zh_CN"
 							@getphonenumber="getPhoneNumber"
 						>
-							手机号注册
+							手机号登录
 						</button>
 					</view>
 				</view>
@@ -72,7 +75,9 @@ export default {
 
 			openid: '',
 			headImg: '../../static/submit1.png',
-			user_nickname: ''
+			user_nickname: '',
+			
+			shouldShowContent: false
 		};
 	},
 	onLoad() {},
@@ -118,6 +123,25 @@ export default {
 		},
 		completeCb(rsp) {},
 
+		onClickScan() {
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: res => {
+					console.log('条码类型：' + res.scanType);
+					console.log('条码内容：' + res.result);
+					if (this.containsStr(res.result, 'http')) {
+						let cat = res.result.split('/');
+
+						uni.setStorageSync('key_cat', cat[cat.length - 1]);
+
+						uni.navigateTo({
+							url: '../category/category'
+						});
+					}
+				}
+			});
+		},
+
 		onClickHistory() {
 			uni.navigateTo({
 				url: '../history/history'
@@ -141,6 +165,7 @@ export default {
 
 		///////////////
 
+		// 0: 普通用户， 1:主管,  2:办公室主任   3: 管理员
 		successPhoneCb(rsp) {
 			console.log('api_phone success');
 			if (this.containsStr(rsp.errMsg, 'ok')) {
@@ -148,6 +173,20 @@ export default {
 					key: 'key_phone_num',
 					data: rsp.data.purePhoneNumber
 				});
+				uni.setStorage({
+					key:'key_user_auth',
+					data: rsp.data.auth
+				});
+				
+				let auth = rsp.data.auth;
+				console.log('auth: ' + auth);
+				if(auth === "0"){
+					this.shouldShowContent = true;
+				}else{
+					uni.navigateTo({
+						url:'../approve/approve'
+					})
+				}
 			}
 		},
 		failPhoneCb(err) {
@@ -168,10 +207,12 @@ export default {
 					success: function(res) {}
 				});
 			} else {
+				
 				let params = {
 					encryptedData: e.detail.encryptedData,
 					iv: e.detail.iv,
-					openid: this.openid
+					openid: this.openid,
+					
 				};
 				this.requestWithMethod(
 					getApp().globalData.api_getWXInfo,

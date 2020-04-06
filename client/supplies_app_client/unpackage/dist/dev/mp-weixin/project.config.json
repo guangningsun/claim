@@ -34,8 +34,8 @@
         },
         {
           "id": 1,
-          "name": "pages/category/category_detail_list",
-          "pathName": "pages/category/category_detail_list",
+          "name": "pages/index/auth",
+          "pathName": "pages/index/auth",
           "query": ""
         }
       ]
