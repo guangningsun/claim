@@ -199,13 +199,15 @@ def weixin_gusi(request):
             # 增加创建用户动作 openid phonenumber nickname
             try:
                 # 用户登录时判断用户是否存在
-                UserInfo.objects.get(weixin_openid=openid)
+                userinfo = UserInfo.objects.get(weixin_openid=openid)
+                res_data["auth"]= userinfo.auth
             except UserInfo.DoesNotExist:
                 # 不存在则创建新用户
                 userinfo = UserInfo(weixin_openid=openid,
                                     phone_number=phone_number,
                                     auth="0")
                 userinfo.save()
+                res_data["auth"] = "0"
             return HttpResponse(json.dumps(res_data),content_type='application/json')
         except:
             pass
