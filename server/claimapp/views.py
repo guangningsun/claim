@@ -85,8 +85,8 @@ def claim_asset(request):
                 if int(assetinfo.asset_count)<int(claim_count):
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
                 # 查看该部门是否有权限申领该数量
-                if int(claim_count)> 5:
-                    return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
+                # if int(claim_count)> 5:
+                #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
                 # 资产管理减少指定数量物品
                 assetinfo.save()

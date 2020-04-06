@@ -41,6 +41,7 @@ class AssetInfo(models.Model):
     asset_unit = models.CharField(max_length=200,verbose_name='计量单位')
     asset_image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
+    asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
 
 
 
