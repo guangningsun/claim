@@ -53,6 +53,7 @@ def asset_detail(request):
                     "asset_info": serializer.data }}
         return Response(res_json)
 
+
 # 通过物品分类 category id获取商品列表
 @api_view(['GET'])
 def asset_by_cid(request,cid):
@@ -72,29 +73,32 @@ def claim_asset(request):
         # import pdb;pdb.set_trace()
         claim_list = request.POST['choose_list']
         category = request.POST['category']
+        reason = request.POST['reason']
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
             for claim_submmit in json.loads(claim_list):
                 claim_count = claim_submmit['claim_count']
                 claim_name = claim_submmit['claim_name']
+                claim_unit = claim_submmit['claim_unit']
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
                 # 查看申领物品剩余是否足量
                 if int(assetinfo.asset_count)<int(claim_count):
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
                 # 查看该部门是否有权限申领该数量
-                if int(claim_count)> 5:
-                    return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
+                # if int(claim_count)> 5:
+                #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
                 # 资产管理减少指定数量物品
                 assetinfo.save()
                 # 创建申领物品
-                cs = Claimlist(claim_count=claim_count,claim_name=claim_name)
+                cs = Claimlist(claim_count=claim_count,claim_name=claim_name,claim_unit=claim_unit)
                 cs.save()
                 # 申领物品加入该条申领记录中
                 cr.claim_list.add(cs)
             # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
+            cr.desc = reason
             cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
@@ -138,6 +142,58 @@ def claim_detail(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# 修改申请状态
+@api_view(['POST'])
+def change_approval_status(request):
+    if request.method == 'POST':
+        openid = request.POST['openid']
+        is_rejectted = request.POST['is_rejectted']
+        is_finished = request.POST['is_finished']
+        reason = request.POST['reason']
+        record_id = request.POST['record_id']
+        #通过openid获取该用户所在部门category和权限auth
+        try:
+            userinfo = UserInfo.objects.get(weixin_openid=openid)
+            #如果是该部门主管则将状态修改到待管理员审批
+            if userinfo.auth == "1" and is_rejectted:
+                # 主管未通过审批则将状态更改为 5拒绝申请
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.approval_status="5"
+                clr.desc=reason
+                clr.save()
+            elif userinfo.auth == "1" and not is_rejectted:
+                # 主管通过审批则将状态更改为 2待管理员审批
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.approval_status="2"
+                clr.save()
+            elif userinfo.auth == "3" and not is_rejectted:
+                # 管理员通过审批则将状态改为 3 审批完成待发放
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.approval_status="3"
+                clr.save()
+            elif userinfo.auth == "3" and is_rejectted:
+                # 管理员未通过审批则将状态改为 5拒绝申请
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.approval_status="5"
+                clr.desc=reason
+                clr.save()
+            
+            if userinfo.auth == "3" and is_finished:
+                clr = ClaimRecord.objects.get(id=record_id)
+                clr.approval_status="4"
+                clr.desc=reason
+                clr.save()
+            
+            res_json = {"error": 0,"msg": "status success changed"}
+            return Response(res_json)
+        except:
+            pass
+
+
+
+
+# 获取审批列表
 @api_view(['POST'])
 def get_approval_list(request):
     if request.method == 'POST':
@@ -155,7 +211,11 @@ def get_approval_list(request):
                     if k == "claim_list":
                         cl =[]
                         for cli in v:
-                            cl.append(Claimlist.objects.get(id=cli))
+                            cl_obj = Claimlist.objects.get(id=cli)
+                            col_data = cl_obj.claim_count+cl_obj.claim_unit
+                            dic = {}
+                            dic[Claimlist.objects.get(id=cli).claim_name]=col_data
+                            cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
                     if k == "category":
                         serializer.data[i]['category'] = Category.objects.get(id=v).name
