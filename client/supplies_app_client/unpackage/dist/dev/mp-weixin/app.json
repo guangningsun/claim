@@ -1,15 +1,14 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/index/auth",
     "pages/history/history",
     "pages/item_choose/item_choose",
-    "pages/item_choose/cart",
     "pages/category/category",
     "pages/cart/cart",
     "pages/approve/approve",
     "pages/approve/approve_detail",
     "pages/me/me",
-    "pages/index/auth",
+    "pages/index/index",
     "pages/category/category_detail_list"
   ],
   "subPackages": [],

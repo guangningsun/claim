@@ -66,6 +66,32 @@
 				@trigger="trigger"
 			/>
 		</view>
+		
+		<view class="cu-modal" :class="modalName=='ReasonModal'?'show':''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">数量超限申请</view>
+					<view class="action" @tap="hideModal">
+						<text class="cuIcon-close text-light-purple"></text>
+					</view>
+				</view>
+		
+				<form>
+					<view class="cu-form-group">
+						<view class="title">理由</view>
+						<input class="text-left" placeholder="输入申请理由" name="input" v-model="reason"></input>
+						<!-- <textarea class="text-left" maxlength="-1" @input="textareaInput" placeholder="输入拒绝原因"></textarea> -->
+					</view>
+				</form>
+		
+				<view class="cu-bar bg-white justify-end">
+					<view class="action">
+						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
+						<button class="cu-btn bg-olive margin-left" @tap="onConfirmReason()">确定</button>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -79,6 +105,9 @@ export default {
 	},
 	data() {
 		return {
+			modalName: null,
+			reason:'',
+			
 			domain: getApp().globalData.domain,
 			default_img: 'this.src="' + require('../../static/default.png') + '"',
 
@@ -103,26 +132,12 @@ export default {
 					text: '提交选择',
 					active: true
 				}
-				// {
-				// 	iconPath: '/static/order.png',
-				// 	selectedIconPath: '/static/order.png',
-				// 	text: '我的申领',
-				// 	active: false
-				// }
 			],
 			catagory_num_limit: 5,
 			item_limit: 5
 		};
 	},
 	onLoad() {
-		// this.requestWithMethod(
-		// 	getApp().globalData.api_asset,
-		// 	'GET',
-		// 	'',
-		// 	this.successCb,
-		// 	this.failCb,
-		// 	this.completeCb
-		// );
 		this.cartList = getApp().globalData.cart_list_info;
 		this.isShowFab = this.cartList.length > 0;
 	},
@@ -155,6 +170,18 @@ export default {
 			this.cartList[index].number = event;
 		},
 
+		showModal(e) {
+			this.modalName = e;
+		},
+		hideModal(e) {
+			this.modalName = null;
+		},
+		
+		onConfirmReason(){
+			this.submit();
+			this.reason = '';
+		},
+
 		trigger(e) {
 			
 			let itemList = this.cartList.filter(item => {
@@ -165,24 +192,39 @@ export default {
 				this.showToast('请选择物品数量');
 				return;
 			}
-
-			if (e.index === 0) {
-				uni.showModal({
-					title: '提示',
-					content: '是否申领选择的物品？',
-					success: res => {
-						if (res.confirm) {
-							this.submit();
-						} else if (res.cancel) {
-							console.log('用户点击取消');
-						}
-					}
-				});
-			} else if (e.index === 1) {
-				uni.navigateTo({
-					url: '../history/history'
-				});
-			}
+			
+			let isExceedLimit = false;
+			for (let i = 0; i < itemList.length; i++) { 
+				console.log('current number: '+this.cartList[i].number);
+				console.log('lim num: '+itemList[i].asset_limit_nu);
+				
+			    if(itemList[i].asset_limit_nu < this.cartList[i].number){
+					isExceedLimit = true;
+					break;
+				}
+			 }
+			 
+			 if(isExceedLimit){
+				 this.showModal('ReasonModal');
+			 }else{
+				 if (e.index === 0) {
+				 	uni.showModal({
+				 		title: '提示',
+				 		content: '是否申领选择的物品？',
+				 		success: res => {
+				 			if (res.confirm) {
+				 				this.submit();
+				 			} else if (res.cancel) {
+				 				console.log('用户点击取消');
+				 			}
+				 		}
+				 	});
+				 } else if (e.index === 1) {
+				 	uni.navigateTo({
+				 		url: '../history/history'
+				 	});
+				 }
+			 }
 		},
 
 		successCallback(rsp) {
@@ -191,6 +233,7 @@ export default {
 				uni.showToast({
 					title: rsp.data.msg,
 					complete: () => {
+						getApp().globalData.cart_list_info = [];
 						setTimeout(function() {
 							uni.navigateTo({
 								url:'../category/category'
@@ -217,8 +260,6 @@ export default {
 		},
 
 		submit() {
-			// if()
-
 			let itemList = this.cartList.filter(item => {
 				return item.number > 0;
 			});
@@ -232,13 +273,12 @@ export default {
 				title: '正在提交'
 			});
 
-			console.log(itemList);
-
 			let cat = uni.getStorageSync('key_cat');
 			let result_list = itemList.map(item => {
 				return Object.assign(
 					{ claim_count: item.number },
 					{ claim_name: item.asset_name },
+					{ claim_unit: item.asset_unit},
 					{ id: item.id }
 				);
 			});
@@ -247,7 +287,8 @@ export default {
 
 			let params = {
 				choose_list: JSON.stringify(result_list),
-				category: cat
+				category: cat,
+				reason: this.reason
 			};
 
 			this.requestWithMethod(

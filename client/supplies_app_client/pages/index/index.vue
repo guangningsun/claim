@@ -33,7 +33,6 @@
 		<button type="default" open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
 			微信登录
 		</button>
-		<image class="margin round" :src="headImg" style="width: 100upx; height: 100upx;"></image>
 	</view>
 </template>
 

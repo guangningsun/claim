@@ -1,7 +1,7 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index",
+			"path": "pages/index/auth",
 			"style": {
 				"navigationBarTitleText": "",
 				"backgroundColor": "#EEEEEE"
@@ -13,38 +13,28 @@
 			"path": "pages/item_choose/item_choose",
 			"style": {}
 		}, {
-			"path": "pages/item_choose/cart",
+			"path": "pages/category/category",
+			"style": {}
+		}, {
+			"path": "pages/cart/cart",
+			"style": {}
+		}, {
+			"path": "pages/approve/approve",
+			"style": {}
+		}, {
+			"path": "pages/approve/approve_detail",
+			"style": {}
+		}, {
+			"path": "pages/me/me",
+			"style": {}
+		}, {
+			"path": "pages/index/index",
+			"style": {}
+		}, {
+			"path": "pages/category/category_detail_list",
 			"style": {}
 		}
-	    ,{
-            "path" : "pages/category/category",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/cart/cart",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/approve/approve",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/approve/approve_detail",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/me/me",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/auth",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/category/category_detail_list",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

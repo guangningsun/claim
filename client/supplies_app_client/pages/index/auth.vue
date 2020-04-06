@@ -11,7 +11,7 @@
 					style="width: 300upx; height: 300upx;"
 				></image>
 				<button
-					class="bg-olive margin-bottom-sm"
+					class="bg-olive margin-bottom-sm text-df"
 					open-type="getPhoneNumber"
 					lang="zh_CN"
 					@getphonenumber="getPhoneNumber"
@@ -72,7 +72,7 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
-				<view class="padding-xl">需要使用手机号进行登录才可正常使用</view>
+				<view class="padding-xl">需要申请使用手机号登录</view>
 				<view class="cu-bar bg-white">
 					<view class="flex justify-end action">
 						<button class="cu-btn text-gray" @tap="hideModal">取消</button>
@@ -134,6 +134,8 @@ export default {
 		successCb(rsp) {
 			console.log(rsp);
 			if (rsp.data.error === 0) {
+				
+				
 				this.openid = rsp.data.openid;
 				uni.setStorage({
 					key: 'key_wx_openid',
