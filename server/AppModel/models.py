@@ -33,6 +33,7 @@ class AssetInfo(models.Model):
     asset_band = models.CharField(max_length=200,verbose_name='物品品牌')
     asset_unit = models.CharField(max_length=200,verbose_name='计量单位')
     asset_image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
+    asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
 
 
 
@@ -45,6 +46,12 @@ class Claimlist(models.Model):
     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
 
+    def __str__(self):
+        return (("%s %s") % (self.claim_name,self.claim_count))
+    
+    class Meta:
+        verbose_name = '物品清单'
+        verbose_name_plural = '物品清单'
 
 class ClaimRecord(models.Model):
     STATUS_CHOICES = [
@@ -77,6 +84,16 @@ class ClaimRecord(models.Model):
             ("issued_asset", "发放审批"),
             ("rejectted", "审批不通过"), 
         )
+
+
+class MappingClaimLisToRecord(models.Model):
+    claimlist = models.ForeignKey(Claimlist, models.DO_NOTHING,verbose_name='物品清单')
+    claimrecord = models.ForeignKey(ClaimRecord, models.DO_NOTHING,verbose_name='申领记录')
+
+    class Meta:
+        managed = False
+        db_table = 'AppModel_claimrecord_claim_list'
+        unique_together = (('claimlist', 'claimrecord'),)
 
 
 # 组织机构详细信息

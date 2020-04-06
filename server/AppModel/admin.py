@@ -26,11 +26,11 @@ logger.addHandler(handler)
 # 资产管理
 @admin.register(AssetInfo)
 class AssetInfoAdmin(ImportExportModelAdmin):
-    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image']
+    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory']
     # list_editable = ['asset_name','asset_count']
-    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image')
+    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory')
     fieldsets = [
-       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory'], 'classes': ['collapse']}),
     ]
     list_display_links = ('asset_name',)
     list_per_page = 10
@@ -41,7 +41,8 @@ class AssetInfoAdmin(ImportExportModelAdmin):
 class ClaimRecordAdmin(ImportExportModelAdmin):
     # list_display=['claim_username','claim_count','claim_phone_num','claim_weixin_id','claim_name','claim_date','category']
     # list_display=['claim_count','claim_name','claim_date','category',"approval_status"]
-    list_display=['id','claim_date','category',"approval_status"]
+    list_display=['id','claim_date','category',"approval_status","get_desc"]
+
     # search_fields =('claim_count','claim_name','claim_date','category',"approval_status")
     fieldsets = [
        ('用户数据', {'fields': ['claim_date','category',"approval_status"], 'classes': ['collapse']}),
@@ -49,10 +50,19 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
     list_display_links = ('id',)
     list_per_page = 15
     actions = ["supervisor_approval",'director_approval',"admin_approval",'issued_asset','rejectted']
+
+    # 获取物品清单列表
+    def get_desc(self, obj):
+        if obj.id is not None:
+            claim_list = [Claimlist.objects.filter(id = cl.claimlist_id) for cl in MappingClaimLisToRecord.objects.filter(claimrecord_id=obj.id)]
+            return [ (("%s %s") % (cl[0].claim_name,cl[0].claim_count)) for cl in claim_list]
+        else:
+            return "-"
+    get_desc.short_description = "物品清单"
+
     
 
     # 不同权限的用户查看不同状态的申请记录
-
     def get_queryset(self, request):
         # import pdb; pdb.set_trace()
         qs = super().get_queryset(request)

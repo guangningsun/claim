@@ -67,11 +67,8 @@ def claim_asset(request):
             cr.save()
             for claim_submmit in json.loads(claim_list):
                 claim_count = claim_submmit['claim_count']
-                # claim_phone_num = request.POST['claim_phone_num']
                 claim_name = claim_submmit['claim_name']
-                # category = claim_submmit['category']
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
-                # import pdb;pdb.set_trace()
                 # 查看申领物品剩余是否足量
                 if int(assetinfo.asset_count)<int(claim_count):
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
@@ -81,14 +78,14 @@ def claim_asset(request):
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
                 # 资产管理减少指定数量物品
                 assetinfo.save()
-                # 创建申领记录
+                # 创建申领物品
                 cs = Claimlist(claim_count=claim_count,claim_name=claim_name)
                 cs.save()
+                # 申领物品加入该条申领记录中
                 cr.claim_list.add(cs)
-                
-            # claimrecord = ClaimRecord(claim_list=claim_obj_list, 
-                                    # category=Category.objects.get(id=category))
+            # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
+            cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
         except :
