@@ -9,11 +9,18 @@ from AppModel import *
 
 
 class UserInfo(models.Model):
-    id = models.AutoField(verbose_name='用户ID',primary_key=True)
-    login_name = models.CharField(max_length=200,verbose_name='用户名')
-    weixin_id = models.CharField(max_length=200,verbose_name='微信ID')
+    AUTH_CHOICES = [
+    ('0', '员工'),
+    ('1', '主管'),
+    ('2', '主任'),
+    ('3', '管理员'),
+    ]
+    nick_name = models.CharField(max_length=200,verbose_name='微信名')
+    user_name = models.CharField(max_length=200,verbose_name='用户名')
+    weixin_openid = models.CharField(max_length=200,verbose_name='微信ID')
     phone_number = models.CharField(max_length=200,verbose_name='手机号')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
+    auth = models.CharField(max_length=200, choices=AUTH_CHOICES,verbose_name='用户权限')
 
     class Meta:
         verbose_name = '用户信息'

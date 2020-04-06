@@ -64,7 +64,6 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
 
     # 不同权限的用户查看不同状态的申请记录
     def get_queryset(self, request):
-        # import pdb; pdb.set_trace()
         qs = super().get_queryset(request)
         if request.user.is_superuser is not True:
             if request.user.has_perm("AppModel.supervisor_approval"):
@@ -150,10 +149,10 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
 # 用户管理
 @admin.register(UserInfo)
 class UserInfoAdmin(ImportExportModelAdmin): 
-    list_display=['id','weixin_id','login_name','phone_number','category']
-    search_fields =('login_name','weixin_id','phone_number','category')
+    list_display=['id','nick_name','user_name','weixin_openid','phone_number','category','auth']
+    search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth')
     fieldsets = [
-       ('用户数据', {'fields': ['login_name','weixin_id','phone_number','category'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth'], 'classes': ['collapse']}),
     ]
     list_per_page = 15
 
