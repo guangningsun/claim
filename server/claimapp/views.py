@@ -161,6 +161,7 @@ def get_approval_list(request):
                         for cli in v:
                             cl_obj = Claimlist.objects.get(id=cli)
                             col_data = cl_obj.claim_count+cl_obj.claim_unit
+                            dic = {}
                             dic[Claimlist.objects.get(id=cli).claim_name]=col_data
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
