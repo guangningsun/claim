@@ -233,6 +233,7 @@ var _default =
   onLoad: function onLoad() {
     this.initData();
   },
+
   // onUnload() {
   // 	this.install_device_list = [],
   // 		this.loadMoreText = "加载更多",
@@ -241,8 +242,6 @@ var _default =
   methods: {
 
     initData: function initData() {
-
-
 
       // uni.stopPullDownRefresh();
 
@@ -261,11 +260,24 @@ var _default =
       // 	this.successCb,
       // 	this.failCb,
       // 	this.completeCb);
+
+      var params = {
+        auth: uni.getStorageSync('key_user_auth'),
+        openid: uni.getStorageSync('key_wx_openid') };
+
+      this.requestWithMethod(
+      getApp().globalData.api_get_approval_list,
+      'POST',
+      params,
+      this.successCb,
+      this.failCb,
+      this.completeCb);
+
     },
     successCb: function successCb(rsp) {
       console.log('success cb');
       if (rsp.data.error === 0) {
-        this.approve_list = rsp.data.msg.approve_list;
+        this.approve_list = rsp.data.msg.approval_list_info;
 
         // let rspList = rsp.data.msg.install_device_list;
         // this.approve_list = this.install_device_list.concat(rspList);

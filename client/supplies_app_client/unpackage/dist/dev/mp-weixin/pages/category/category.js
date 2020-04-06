@@ -131,7 +131,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 95));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 97));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 

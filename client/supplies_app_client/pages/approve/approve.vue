@@ -8,9 +8,9 @@
 			<view class="cu-item">
 				<view class="flex justify-between">
 					<view class="flex align-center text-left margin-top-sm margin-left-sm text-gray" style="width: 100%;">
-						{{item.applytime}}
+						{{item.claim_date}}
 					</view>
-					<view class="cu-tag radius bg-green">{{item.status}}</view>
+					<view class="cu-tag radius bg-green">{{item.approval_status}}</view>
 				</view>
 				<view class="flex">
 					<view class="margin-top-sm margin-left-sm">
@@ -102,6 +102,7 @@
 		onLoad() {
 			this.initData();
 		},
+
 		// onUnload() {
 		// 	this.install_device_list = [],
 		// 		this.loadMoreText = "加载更多",
@@ -110,8 +111,6 @@
 		methods: {
 			
 			initData() {
-				
-				
 				
 				// uni.stopPullDownRefresh();
 
@@ -130,11 +129,24 @@
 				// 	this.successCb,
 				// 	this.failCb,
 				// 	this.completeCb);
+				
+				let params = {
+					auth : uni.getStorageSync('key_user_auth'),
+					openid: uni.getStorageSync('key_wx_openid')
+				};
+				this.requestWithMethod(
+					getApp().globalData.api_get_approval_list,
+					'POST',
+					params,
+					this.successCb,
+					this.failCb,
+					this.completeCb
+				);
 			},
 			successCb(rsp) {
 				console.log('success cb')
 				if (rsp.data.error === 0) {
-					this.approve_list = rsp.data.msg.approve_list;
+					this.approve_list = rsp.data.msg.approval_list_info;
 					
 					// let rspList = rsp.data.msg.install_device_list;
 					// this.approve_list = this.install_device_list.concat(rspList);

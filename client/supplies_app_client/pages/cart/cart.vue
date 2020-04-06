@@ -126,6 +126,9 @@ export default {
 		this.cartList = getApp().globalData.cart_list_info;
 		this.isShowFab = this.cartList.length > 0;
 	},
+	onHide() {
+		
+	},
 	methods: {
 		successCb(rsp) {
 			console.log('success cb');

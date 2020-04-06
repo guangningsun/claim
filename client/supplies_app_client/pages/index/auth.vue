@@ -3,16 +3,45 @@
 		<cu-custom bgColor="bg-gradual-green" :isBack="false">
 			<block slot="content">用品申领平台</block>
 		</cu-custom>
-		
+
+		<view v-show="!shouldShowContent && showCenterIcon">
+			<view class="justify-center l-center">
+				<image
+					src="../../static/auth_index_icon.png"
+					style="width: 300upx; height: 300upx;"
+				></image>
+				<button
+					class="bg-olive margin-bottom-sm"
+					open-type="getPhoneNumber"
+					lang="zh_CN"
+					@getphonenumber="getPhoneNumber"
+				>
+					手机号登录
+				</button>
+			</view>
+			<!-- 			<view class="l-foot padding flex justify-end">
+				
+				<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
+					微信登录
+				</button>
+			</view> -->
+		</view>
+
 		<view v-show="shouldShowContent">
-			<view class="cu-list grid col-1 no-border" style="margin-top: 70upx; padding-top: 40upx;">
+			<view
+				class="cu-list grid col-1 no-border"
+				style="margin-top: 70upx; padding-top: 40upx;"
+			>
 				<view class="cu-item" @tap="onClickScan">
 					<view class="flex justify-center">
-						<image src="../../static/scan.png" style="width: 80upx; height: 80upx;"></image>
+						<image
+							src="../../static/scan.png"
+							style="width: 80upx; height: 80upx;"
+						></image>
 					</view>
 					<text class="margin-top-sm">扫码领用</text>
 				</view>
-			
+
 				<!-- <view class="cu-item" @tap="onClickHistory">
 					<view class="flex justify-center">
 						<image
@@ -23,27 +52,22 @@
 					<text class="margin-top-sm">我的领用</text>
 				</view> -->
 			</view>
-			
-			<view class="padding">
-				<button
-					class="bg-olive margin-bottom-sm"
-					open-type="getPhoneNumber"
-					lang="zh_CN"
-					@getphonenumber="getPhoneNumber"
-				>
-					手机号登录
-				</button>
-				<!-- <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
-					微信登录
-				</button> -->
-			</view>
 		</view>
+
+		<!-- <view v-show="showLoading" class="l-center">
+			<image
+				src="https://image.weilanwl.com/gif/loading-white.gif"
+				mode="aspectFit"
+				class="gif-white response"
+				style="height:240upx"
+			></image>
+		</view> -->
 
 		<!-- 申请手机号modal -->
 		<view class="cu-modal bottom-modal" :class="modalName == 'PhoneModal' ? 'show' : ''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
-					<view class="content">用户手机号申请</view>
+					<view class="content">手机号登录</view>
 					<view class="action" @tap="hideModal">
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
@@ -76,8 +100,9 @@ export default {
 			openid: '',
 			headImg: '../../static/submit1.png',
 			user_nickname: '',
-			
-			shouldShowContent: false
+
+			shouldShowContent: false,
+			showCenterIcon: true
 		};
 	},
 	onLoad() {},
@@ -124,9 +149,15 @@ export default {
 		completeCb(rsp) {},
 
 		onClickScan() {
+			uni.showLoading({
+				title: '跳转中'
+			});
 			uni.scanCode({
 				onlyFromCamera: true,
 				success: res => {
+					this.showCenterIcon = false;
+					uni.hideLoading();
+
 					console.log('条码类型：' + res.scanType);
 					console.log('条码内容：' + res.result);
 					if (this.containsStr(res.result, 'http')) {
@@ -174,18 +205,19 @@ export default {
 					data: rsp.data.purePhoneNumber
 				});
 				uni.setStorage({
-					key:'key_user_auth',
+					key: 'key_user_auth',
 					data: rsp.data.auth
 				});
-				
+
 				let auth = rsp.data.auth;
 				console.log('auth: ' + auth);
-				if(auth === "0"){
+				uni.hideLoading();
+				if (auth === '0') {
 					this.shouldShowContent = true;
-				}else{
+				} else {
 					uni.navigateTo({
-						url:'../approve/approve'
-					})
+						url: '../approve/approve'
+					});
 				}
 			}
 		},
@@ -207,12 +239,16 @@ export default {
 					success: function(res) {}
 				});
 			} else {
-				
+				this.showCenterIcon = false;
+
+				uni.showLoading({
+					title: '跳转中'
+				});
+
 				let params = {
 					encryptedData: e.detail.encryptedData,
 					iv: e.detail.iv,
-					openid: this.openid,
-					
+					openid: this.openid
 				};
 				this.requestWithMethod(
 					getApp().globalData.api_getWXInfo,
@@ -228,4 +264,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.l-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+</style>

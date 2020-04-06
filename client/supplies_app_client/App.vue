@@ -11,8 +11,9 @@
 			api_asset: 'asset/',
 			api_claim_asset: 'claim_asset/',
 			api_category: 'commoditycategory/',
-			api_approve: 'approve/',
+			api_approve: 'approval/',
 			api_getWXInfo: 'weixin_gusi/',
+			api_get_approval_list:'get_approval_list/',
 			
 			// 物品篮物品
 			cart_list_info: [],
