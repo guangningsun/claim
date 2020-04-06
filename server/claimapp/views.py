@@ -141,6 +141,21 @@ def claim_detail(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 修改申请状态
+@api_view(['POST'])
+def change_approval_status(request):
+    if request.method == 'POST':
+        openid = request.POST['openid']
+        is_rejectted = request.POST['is_rejectted']
+        reason = request.POST['reason']
+        record_id = request.POST['record_id']
+        #通过openid获取该用户所在部门category和权限auth
+        #如果是该部门主管则将状态修改到待管理员审批
+        #
+
+
+
+
 # 获取审批列表
 @api_view(['POST'])
 def get_approval_list(request):
