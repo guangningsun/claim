@@ -157,27 +157,34 @@ def change_approval_status(request):
             if userinfo.auth == "1" and is_rejectted:
                 # 主管未通过审批则将状态更改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
-                clr.update(approval_status="5",desc=reason)
+                clr.approval_status="5"
+                clr.desc=reason
+                clr.save()
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
-                clr.update(approval_status="2")
+                clr.approval_status="2"
+                clr.save()
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
-                clr.update(approval_status="3")
+                clr.approval_status="3"
+                clr.save()
             elif userinfo.auth == "3" and is_rejectted:
                 # 管理员未通过审批则将状态改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
-                clr.update(approval_status="5",desc=reason)
+                clr.approval_status="5"
+                clr.desc=reason
+                clr.save()
             
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
-                clr.update(approval_status="4",desc=reason)
+                clr.approval_status="4"
+                clr.desc=reason
+                clr.save()
             
             res_json = {"error": 0,"msg": "status success changed"}
             return Response(res_json)
-
         except:
             pass
 
