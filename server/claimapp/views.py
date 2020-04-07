@@ -283,18 +283,21 @@ def weixin_sns(request,js_code):
             # WeixinSessionKey.objects.update_or_create(weixin_openid=openid,
             #                                         weixin_sessionkey=session_key)
             is_login = "1"
+            user_auth = "0"
             try:
                 wsk = WeixinSessionKey.objects.get(weixin_openid=openid)
                 wsk.weixin_sessionkey = session_key
                 wsk.save()
+                userinfo = UserInfo.objects.get(weixin_openid=openid)
                 # 增加用户是否已登录
                 is_login = "1"
+                user_auth = userinfo.auth
             except WeixinSessionKey.DoesNotExist:
                 cwsk = WeixinSessionKey(weixin_openid=openid,weixin_sessionkey=session_key)
                 cwsk.save()
                 is_login = "0"
 
-            return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\",\"is_login\":\""+is_login+"\"}",
+            return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\",\"is_login\":\""+is_login+"\",\"auth\":\""+user_auth+"\"}",
                             content_type='application/json',)
         else:
             return Response(_generate_json_message(False,"code 无效"))
