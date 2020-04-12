@@ -72,7 +72,7 @@ class ClaimRecord(models.Model):
     ('5', '未批准'),
     ]
     # claim_username = models.CharField(max_length=200,verbose_name='申领人')
-    # claim_weixin_id = models.CharField(max_length=200,verbose_name='申领人微信ID')
+    claim_weixin_openid = models.CharField(max_length=200,verbose_name='申领人微信OPENID')
     # claim_count = models.CharField(max_length=200,verbose_name='申领数量')
     # claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
     # claim_name = models.CharField(max_length=200,verbose_name='物品名称')

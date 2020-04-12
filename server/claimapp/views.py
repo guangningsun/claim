@@ -74,6 +74,7 @@ def claim_asset(request):
         claim_list = request.POST['choose_list']
         category = request.POST['category']
         reason = request.POST['reason']
+        claim_weixin_openid = request.POST['claim_weixin_openid']
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
@@ -99,6 +100,7 @@ def claim_asset(request):
             # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
             cr.desc = reason
+            cr.claim_weixin_openid = claim_weixin_openid
             cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
@@ -163,7 +165,7 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
-                __weixin_send_message(openid,clr.claim_date,clr.claim_list,"主管未通过")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),clr.__str__,"主管未通过")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -341,14 +343,15 @@ def __weixin_send_message(touser,date3,thing6,phrase1):
     SECRET = '16704cf51186b336da15ed9f67cc7401'
     get_access_token_request_data = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+APPID+"&secret="+SECRET+""
     req_access = requests.get(get_access_token_request_data)
-    access_token = json.loads(req_access)['access_token']
+    access_token = json.loads(req_access.content)['access_token']
     body = {
             "access_token":access_token,
             "touser": touser,
             "template_id": "GOx_7a-j5CFw6kOHS9Z3H05LXmgNK8tudus9ud7c3ZU",
+            "miniprogram_state": "developer",
             "data":{
                 "date3": {
-                    "value": value
+                    "value": date3
                 },
                 "thing6":{
                     "value": thing6
@@ -361,3 +364,4 @@ def __weixin_send_message(touser,date3,thing6,phrase1):
     }
     requst_data = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+access_token+""
     response = requests.post(requst_data, data = json.dumps(body))
+    return 0
