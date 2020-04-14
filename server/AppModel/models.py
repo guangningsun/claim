@@ -57,7 +57,7 @@ class Claimlist(models.Model):
 
     def __str__(self):
         return (("%s %s%s") % (self.claim_name,self.claim_count,self.claim_unit))
-    
+
     class Meta:
         verbose_name = '物品清单'
         verbose_name_plural = '物品清单'

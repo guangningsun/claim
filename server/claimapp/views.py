@@ -17,7 +17,7 @@ import hashlib,urllib,random,logging,requests,base64
 import json,time,django_filters,xlrd,uuid
 from rest_framework import status
 import time, datetime
-import requests
+import requests,configparser
 from AppModel.WXBizDataCrypt import WXBizDataCrypt 
 
 
@@ -29,6 +29,10 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
+conf_dir = settings.CONF_DIR
+cf = configparser.ConfigParser()
+cf.read('claim_server.conf')
 
 # 内部方法用于返回json消息
 # done
@@ -165,30 +169,33 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),clr.__str__,"主管未通过")
+                # clr.get_desc()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","主管未通过")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="2"
                 clr.save()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过主管审批，待管理员审批")
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="3"
                 clr.save()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过管理员审批，待领取")
             elif userinfo.auth == "3" and is_rejectted:
                 # 管理员未通过审批则将状态改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
-            
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","管理员未通过审批")
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="4"
                 clr.desc=reason
                 clr.save()
-            
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已成功领取")
             res_json = {"error": 0,"msg": "status success changed"}
             return Response(res_json)
         except:
@@ -276,8 +283,8 @@ def commoditycategory_detail(request):
 @api_view(['POST'])
 def weixin_sns(request,js_code):
     if request.method == 'POST':
-        APPID = 'wx1010e77892dd6991'
-        SECRET = '16704cf51186b336da15ed9f67cc7401'
+        APPID = cf.get("WEIXIN", "weixin_appid")
+        SECRET = cf.get("WEIXIN", "weixin_secret")
         JSCODE = js_code
         requst_data = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code"
         req = requests.get(requst_data)
@@ -311,7 +318,7 @@ def weixin_sns(request,js_code):
 @api_view(['POST'])
 def weixin_gusi(request):
     if request.method == 'POST':
-        appId = 'wx1010e77892dd6991'
+        appId = cf.get("WEIXIN", "weixin_appid")
         openid = request.POST['openid']
         try:
             sessionKey = WeixinSessionKey.objects.get(weixin_openid=openid).weixin_sessionkey
@@ -339,16 +346,16 @@ def weixin_gusi(request):
 
 def __weixin_send_message(touser,date3,thing6,phrase1):
     # get access token
-    APPID = 'wx1010e77892dd6991'
-    SECRET = '16704cf51186b336da15ed9f67cc7401'
+    APPID = cf.get("WEIXIN", "weixin_appid")
+    SECRET = cf.get("WEIXIN", "weixin_secret")
     get_access_token_request_data = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+APPID+"&secret="+SECRET+""
     req_access = requests.get(get_access_token_request_data)
     access_token = json.loads(req_access.content)['access_token']
     body = {
             "access_token":access_token,
             "touser": touser,
-            "template_id": "GOx_7a-j5CFw6kOHS9Z3H05LXmgNK8tudus9ud7c3ZU",
-            "miniprogram_state": "developer",
+            "template_id": cf.get("WEIXIN", "weixin_template_id"),
+            "miniprogram_state": cf.get("WEIXIN", "miniprogram_state"),
             "data":{
                 "date3": {
                     "value": date3
