@@ -19,6 +19,7 @@ from rest_framework import status
 import time, datetime
 import requests,configparser
 from AppModel.WXBizDataCrypt import WXBizDataCrypt 
+from django.conf import settings
 
 
 logger = logging.getLogger(__name__)
