@@ -33,7 +33,8 @@ logger.addHandler(handler)
 
 conf_dir = settings.CONF_DIR
 cf = configparser.ConfigParser()
-cf.read('claim_server.conf')
+cf.read(conf_dir)
+logger.info("成功加载配置文件 %s " % (conf_dir))
 
 # 内部方法用于返回json消息
 # done
@@ -287,8 +288,10 @@ def weixin_sns(request,js_code):
         APPID = cf.get("WEIXIN", "weixin_appid")
         SECRET = cf.get("WEIXIN", "weixin_secret")
         JSCODE = js_code
+        logger.debug("获取appid %s  secret %s" % (APPID,SECRET))
         requst_data = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code"
         req = requests.get(requst_data)
+        logger.debug("拼接的微信登录url 为 %s" % (requst_data ))
         if req.status_code == 200:
             openid = json.loads(req.content)['openid']
             session_key = json.loads(req.content)['session_key']
