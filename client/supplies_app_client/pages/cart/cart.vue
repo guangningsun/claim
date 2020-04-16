@@ -3,7 +3,14 @@
 		<cu-custom bgColor="bg-gradual-green" :isBack="true">
 			<block slot="content">物品篮</block>
 		</cu-custom>
-		<view class="margin-xl"></view>
+		
+		<view v-show="showEmpty" style="margin-top: 200upx;">
+			<view class="flex justify-center align-center margin-left-xl">
+				<image src="../../static/empty_icon.png" style="width: 200upx; height: 200upx;" />
+			</view>
+			<view class="flex justify-center text-gray margin-top">空空如也</view>
+		</view>
+		
 		<view v-for="(item, index) in cartList" :key="index">
 			<view class="cu-card card-margin">
 				<view
@@ -55,7 +62,7 @@
 				</view>
 			</view>
 		</view>
-		<view v-show="isShowFab">
+		<view v-show="!showEmpty">
 			<uni-fab
 				ref="fab"
 				:pattern="pattern"
@@ -113,7 +120,7 @@ export default {
 
 			cartList: [],
 			
-			isShowFab: true,
+			showEmpty: false,
 
 			directionStr: '垂直',
 			horizontal: 'right',
@@ -139,7 +146,7 @@ export default {
 	},
 	onLoad() {
 		this.cartList = getApp().globalData.cart_list_info;
-		this.isShowFab = this.cartList.length > 0;
+		this.showEmpty = !(this.cartList.length > 0);
 	},
 	onHide() {
 		
@@ -230,6 +237,14 @@ export default {
 		successCallback(rsp) {
 			console.log('success cb');
 			if (rsp.data.error === 0) {
+				uni.requestSubscribeMessage({
+				  tmplIds: ['GOx_7a-j5CFw6kOHS9Z3H05LXmgNK8tudus9ud7c3ZU'],
+				  success (res) {
+					  console.log('subscribe msg: ');
+					  console.log(res);
+				  }
+				})
+				
 				uni.showToast({
 					title: rsp.data.msg,
 					complete: () => {
@@ -288,7 +303,8 @@ export default {
 			let params = {
 				choose_list: JSON.stringify(result_list),
 				category: cat,
-				reason: this.reason
+				reason: this.reason,
+				claim_weixin_openid: uni.getStorageSync('key_wx_openid')
 			};
 
 			this.requestWithMethod(

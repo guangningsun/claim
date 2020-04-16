@@ -3,7 +3,14 @@
 		<cu-custom bgColor="bg-gradual-green" :isBack="true">
 			<block slot="content">{{ cate_title }}</block>
 		</cu-custom>
-		<view class="margin-xl"></view>
+		
+		<view v-show="showEmpty" style="margin-top: 200upx;">
+			<view class="flex justify-center align-center margin-left-xl">
+				<image src="../../static/empty_icon.png" style="width: 200upx; height: 200upx;" />
+			</view>
+			<view class="flex justify-center text-gray margin-top">空空如也</view>
+		</view>
+		
 		<view v-for="(item, index) in cartList" :key="index">
 			<view class="cu-card card-margin">
 				<view
@@ -69,7 +76,7 @@
 				</view>
 			</view>
 		</view>
-		<view>
+		<view v-show="!showEmpty">
 			<uni-fab
 				ref="fab"
 				:pattern="pattern"
@@ -93,6 +100,8 @@ export default {
 	},
 	data() {
 		return {
+			showEmpty:false,
+			
 			cate_title: '',
 			cateId: '',
 
@@ -166,7 +175,7 @@ export default {
 		onAdd(item) {
 			if (getApp().globalData.cart_list_info.length == 0) {
 				getApp().globalData.cart_list_info.push(item);
-				this.showToast('成功添加到购物车');
+				this.showToast('成功添加到物品篮');
 				console.log(getApp().globalData.cart_list_info);
 				return;
 			}
@@ -181,19 +190,19 @@ export default {
 
 			getApp().globalData.cart_list_info.push(item);
 			console.log(getApp().globalData.cart_list_info);
-			this.showToast(item.asset_name + ' 成功添加到购物车');
+			this.showToast(item.asset_name + ' 成功添加到物品篮');
 		},
 
 		onMinus(item) {
 			for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
 				if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
 					getApp().globalData.cart_list_info.splice(i, 1);
-					this.showToast(item.asset_name + '成功从购物车删除');
+					this.showToast(item.asset_name + '成功从物品篮删除');
 					console.log(getApp().globalData.cart_list_info);
 					return;
 				}
 			}
-			this.showToast('购物车无 ' + item.asset_name + '，无须删除');
+			this.showToast('物品篮无 ' + item.asset_name + '，无须删除');
 			console.log(getApp().globalData.cart_list_info);
 		},
 
@@ -210,6 +219,9 @@ export default {
 				});
 				console.log(newArr);
 				this.cartList = newArr;
+				if(this.cartList.length == 0){
+					this.showEmpty = true;
+				}
 			}
 		},
 		failCb(err) {

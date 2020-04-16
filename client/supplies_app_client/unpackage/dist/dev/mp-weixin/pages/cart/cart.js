@@ -131,7 +131,14 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 89));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _uniNumberBox = function _uniNumberBox() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-number-box/uni-number-box */ "node-modules/@dcloudio/uni-ui/lib/uni-number-box/uni-number-box").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-number-box/uni-number-box */ 96));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 102));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _uniNumberBox = function _uniNumberBox() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-number-box/uni-number-box */ "node-modules/@dcloudio/uni-ui/lib/uni-number-box/uni-number-box").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-number-box/uni-number-box */ 109));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+
+
+
+
+
+
+
 
 
 
@@ -246,7 +253,7 @@ __webpack_require__.r(__webpack_exports__);
 
       cartList: [],
 
-      isShowFab: true,
+      showEmpty: false,
 
       directionStr: '垂直',
       horizontal: 'right',
@@ -272,7 +279,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   onLoad: function onLoad() {
     this.cartList = getApp().globalData.cart_list_info;
-    this.isShowFab = this.cartList.length > 0;
+    this.showEmpty = !(this.cartList.length > 0);
   },
   onHide: function onHide() {
 
@@ -363,6 +370,14 @@ __webpack_require__.r(__webpack_exports__);
     successCallback: function successCallback(rsp) {
       console.log('success cb');
       if (rsp.data.error === 0) {
+        uni.requestSubscribeMessage({
+          tmplIds: ['GOx_7a-j5CFw6kOHS9Z3H05LXmgNK8tudus9ud7c3ZU'],
+          success: function success(res) {
+            console.log('subscribe msg: ');
+            console.log(res);
+          } });
+
+
         uni.showToast({
           title: rsp.data.msg,
           complete: function complete() {
@@ -421,7 +436,8 @@ __webpack_require__.r(__webpack_exports__);
       var params = {
         choose_list: JSON.stringify(result_list),
         category: cat,
-        reason: this.reason };
+        reason: this.reason,
+        claim_weixin_openid: uni.getStorageSync('key_wx_openid') };
 
 
       this.requestWithMethod(

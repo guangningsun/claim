@@ -19,6 +19,11 @@
 					手机号登录
 				</button>
 			</view>
+			
+			<view class="text-gray text-center justify-center padding-sm" style="position:fixed; bottom:0;" >
+				{{hint}}
+			</view>
+			
 			<!-- 			<view class="l-foot padding flex justify-end">
 				
 				<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
@@ -72,17 +77,17 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
-				<view class="padding-xl">需要申请使用手机号登录</view>
+				<view class="padding-xl">{{hint}}</view>
 				<view class="cu-bar bg-white">
 					<view class="flex justify-end action">
-						<button class="cu-btn text-gray" @tap="hideModal">取消</button>
+						<button class="cu-btn text-gray" @tap="hideModal">拒绝</button>
 						<button
 							class="cu-btn line-olive margin-left-sm"
 							open-type="getPhoneNumber"
 							lang="zh_CN"
 							@getphonenumber="getPhoneNumber"
 						>
-							手机号登录
+							同意
 						</button>
 					</view>
 				</view>
@@ -100,13 +105,21 @@ export default {
 			openid: '',
 			headImg: '../../static/submit1.png',
 			user_nickname: '',
+			user_phone:'',
+			user_auth:'',
 
 			shouldShowContent: false,
-			showCenterIcon: true
+			showCenterIcon: true,
+			
+			hint:'登录后可以完整使用部门物品申领、审批服务。首次使用，需要授权获取您的手机号进行登录绑定。'
 		};
 	},
 	onLoad() {},
 	onShow() {
+		this.user_phone = uni.getStorageSync('key_phone_num');
+		this.openid = uni.getStorageSync('key_wx_openid');
+		this.user_auth = uni.getStorageSync('key_user_auth');
+		
 		uni.login({
 			provider: 'weixin',
 			success: loginRes => {
@@ -134,15 +147,40 @@ export default {
 		successCb(rsp) {
 			console.log(rsp);
 			if (rsp.data.error === 0) {
-				
-				
 				this.openid = rsp.data.openid;
+				let is_login = rsp.data.is_login;
+				let user_auth = rsp.data.auth;
+				
+				uni.setStorage({
+					key: 'key_user_auth',
+					data: user_auth
+				});
+				
 				uni.setStorage({
 					key: 'key_wx_openid',
 					data: rsp.data.openid
 				});
-
-				this.showPhoneModal('PhoneModal');
+				
+////////				
+				if(is_login === '0'){
+					this.showPhoneModal('PhoneModal');
+				}else{
+					console.log('auth:' + user_auth)
+					uni.showLoading({
+						title:'登录中...'
+					})
+					if (user_auth === '0') {
+						uni.hideLoading();
+						this.shouldShowContent = true;
+					} else if(user_auth === '1' || user_auth === '2' || user_auth === '3'){
+						uni.hideLoading();
+						uni.navigateTo({
+							url: '../approve/approve'
+						});
+					} else{
+						this.showToast("未知错误!")
+					}
+				}
 			}
 		},
 		failCb(err) {
@@ -201,6 +239,8 @@ export default {
 		// 0: 普通用户， 1:主管,  2:办公室主任   3: 管理员
 		successPhoneCb(rsp) {
 			console.log('api_phone success');
+			this.showCenterIcon = false;
+			
 			if (this.containsStr(rsp.errMsg, 'ok')) {
 				uni.setStorage({
 					key: 'key_phone_num',
@@ -212,11 +252,11 @@ export default {
 				});
 
 				let auth = rsp.data.auth;
-				console.log('auth: ' + auth);
+				console.log('phone cb auth: ' + auth);
 				uni.hideLoading();
 				if (auth === '0') {
 					this.shouldShowContent = true;
-				} else {
+				} else if(auth === '1' || auth === '2' || auth === '3') {
 					uni.navigateTo({
 						url: '../approve/approve'
 					});
@@ -241,8 +281,6 @@ export default {
 					success: function(res) {}
 				});
 			} else {
-				this.showCenterIcon = false;
-
 				uni.showLoading({
 					title: '跳转中'
 				});

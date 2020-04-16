@@ -16,7 +16,9 @@
 				</view>
 				<view class="flex cu-form-group">
 					<view class="title text-gray">申请物品</view>
-					<view class="text-wrapper text-right margin-bottom-sm margin-top-sm">{{ itemList }}</view>
+					<view class="text-wrapper text-right margin-bottom-sm margin-top-sm">
+						{{ itemList }}
+					</view>
 				</view>
 				<view class="flex cu-form-group">
 					<view class="title text-gray">申请理由</view>
@@ -43,8 +45,8 @@
 				同意
 			</view>
 		</view>
-		
-		<view class="cu-modal" :class="modalName=='RejectModal'?'show':''">
+
+		<view class="cu-modal" :class="modalName == 'RejectModal' ? 'show' : ''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
 					<view class="content">拒绝原因</view>
@@ -52,19 +54,29 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
-		
+
 				<form>
 					<view class="cu-form-group">
 						<view class="title">拒绝原因</view>
-						<input class="text-left" placeholder="输入拒绝原因" name="input" v-model="reject_reason"></input>
+						<input
+							class="text-left"
+							placeholder="输入拒绝原因"
+							name="input"
+							v-model="reject_reason"
+						/>
 						<!-- <textarea class="text-left" maxlength="-1" @input="textareaInput" placeholder="输入拒绝原因"></textarea> -->
 					</view>
 				</form>
-		
+
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
-						<button class="cu-btn bg-gradual-light-red margin-left" @tap="onConfirmReject()">确定</button>
+						<button
+							class="cu-btn bg-gradual-light-red margin-left"
+							@tap="onConfirmReject()"
+						>
+							确定
+						</button>
 					</view>
 				</view>
 			</view>
@@ -76,17 +88,17 @@
 export default {
 	data() {
 		return {
-			reject_reason:'',
+			reject_reason: '',
 			modalName: null,
-			
+
 			date: '',
 			status: '',
 			department: '',
 			items: '',
 			reason: '',
 			itemList: '',
-			
-			approveInfo:''
+
+			approveInfo: ''
 		};
 	},
 	onLoad: function(option) {
@@ -108,26 +120,25 @@ export default {
 		hideModal(e) {
 			this.modalName = null;
 		},
-		
+
 		successStatusCb(rsp) {
 			console.log('success cb');
 			this.initData();
 			if (rsp.data.error === 0) {
-				
 			}
 		},
 		failStatusCb(err) {
 			console.log('api_status failed', err);
 		},
 		completeStatusCb(rsp) {},
-		
-		requestChangeStatus(id, isRejected, reason){
+
+		requestChangeStatus(id, isRejected, reason) {
 			let params = {
 				openid: uni.getStorageSync('key_wx_openid'),
 				is_rejectted: isRejected,
 				is_finished: false,
 				reason: reason,
-				record_id:id
+				record_id: id
 			};
 			this.requestWithMethod(
 				getApp().globalData.api_change_approval_status,
@@ -138,15 +149,15 @@ export default {
 				this.completeStatusCb
 			);
 		},
-		
+
 		onApprove(e) {
-			this.requestChangeStatus(this.approveInfo.id, false,'');
+			this.requestChangeStatus(this.approveInfo.id, false, '');
 		},
 		onRejcet(e) {
 			this.reject_reason = '';
 			this.showModal('RejectModal');
 		},
-		onConfirmReject(e){
+		onConfirmReject(e) {
 			this.requestChangeStatus(this.approveInfo.id, true, this.reject_reason);
 			this.hideModal();
 		}

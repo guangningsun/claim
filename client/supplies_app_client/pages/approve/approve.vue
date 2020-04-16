@@ -4,6 +4,13 @@
 			<block slot="content">审批</block>
 		</cu-custom>
 
+		<view v-show="showEmpty" style="margin-top: 200upx;">
+			<view class="flex justify-center align-center margin-left-xl">
+				<image src="../../static/empty_icon.png" style="width: 200upx; height: 200upx;" />
+			</view>
+			<view class="flex justify-center text-gray margin-top">空空如也</view>
+		</view>
+
 		<view
 			class="cu-card card-margin"
 			style="margin-bottom: -30upx;"
@@ -48,27 +55,39 @@
 					</button>
 				</view>
 			</view>
-			<view class="cu-modal" :class="modalName=='RejectModal'?'show':''">
+			<view class="cu-modal" :class="modalName == 'RejectModal' ? 'show' : ''">
 				<view class="cu-dialog">
 					<view class="cu-bar bg-white justify-end">
 						<view class="content">拒绝原因</view>
 						<view class="action" @tap="hideModal">
-							<text class="cuIcon-close text-light-purple"></text>
+							<text class="cuIcon-close text-light-purple" />
 						</view>
 					</view>
-			
+
 					<form>
 						<view class="cu-form-group">
 							<view class="title">拒绝原因</view>
-							<input class="text-left" placeholder="输入拒绝原因" name="input" v-model="reject_reason"></input>
+							<input
+								class="text-left"
+								placeholder="输入拒绝原因"
+								name="input"
+								v-model="reject_reason"
+							/>
 							<!-- <textarea class="text-left" maxlength="-1" @input="textareaInput" placeholder="输入拒绝原因"></textarea> -->
 						</view>
 					</form>
-			
+
 					<view class="cu-bar bg-white justify-end">
 						<view class="action">
-							<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
-							<button class="cu-btn bg-gradual-light-red margin-left" @tap="onConfirmReject(item)">确定</button>
+							<button class="cu-btn line-gray text-gray" @tap="hideModal">
+								取消
+							</button>
+							<button
+								class="cu-btn bg-gradual-light-red margin-left"
+								@tap="onConfirmReject(item)"
+							>
+								确定
+							</button>
 						</view>
 					</view>
 				</view>
@@ -84,15 +103,19 @@ export default {
 			modalName: null,
 
 			approve_list: [],
-			
-			reject_reason:''
+
+			reject_reason: '',
+
+			showEmpty: false
 		};
 	},
-
 	onLoad() {
 		this.initData();
 	},
-
+	onPullDownRefresh() {
+		console.log('onPullDownRefresh!!!!');
+		this.initData();
+	},
 	methods: {
 		initData() {
 			let params = {
@@ -136,6 +159,9 @@ export default {
 					return item;
 				});
 				this.approve_list = result;
+				if (this.approve_list.length == 0) {
+					this.showEmpty = true;
+				}
 				console.log(this.approve_list);
 			}
 		},
@@ -149,26 +175,25 @@ export default {
 				url: 'approve_detail?approveInfo=' + encodeURIComponent(JSON.stringify(item))
 			});
 		},
-		
+
 		successStatusCb(rsp) {
 			console.log('success cb');
 			this.initData();
 			if (rsp.data.error === 0) {
-				
 			}
 		},
 		failStatusCb(err) {
 			console.log('api_status failed', err);
 		},
 		completeStatusCb(rsp) {},
-		
-		requestChangeStatus(id, isRejected, reason){
+
+		requestChangeStatus(id, isRejected, reason) {
 			let params = {
 				openid: uni.getStorageSync('key_wx_openid'),
 				is_rejectted: isRejected,
 				is_finished: false,
 				reason: reason,
-				record_id:id
+				record_id: id
 			};
 			this.requestWithMethod(
 				getApp().globalData.api_change_approval_status,
@@ -179,22 +204,22 @@ export default {
 				this.completeStatusCb
 			);
 		},
-		
+
 		showModal(e) {
 			this.modalName = e;
 		},
 		hideModal(e) {
 			this.modalName = null;
 		},
-		
+
 		onApprove(item) {
-			this.requestChangeStatus(item.id, false,'');
+			this.requestChangeStatus(item.id, false, '');
 		},
 		onRejcet(item) {
 			this.reject_reason = '';
 			this.showModal('RejectModal');
 		},
-		onConfirmReject(item){
+		onConfirmReject(item) {
 			this.requestChangeStatus(item.id, true, this.reject_reason);
 			this.hideModal();
 		}

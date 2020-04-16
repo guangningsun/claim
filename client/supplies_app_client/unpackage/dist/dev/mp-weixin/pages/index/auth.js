@@ -233,6 +233,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -242,13 +247,21 @@ var _default =
       openid: '',
       headImg: '../../static/submit1.png',
       user_nickname: '',
+      user_phone: '',
+      user_auth: '',
 
       shouldShowContent: false,
-      showCenterIcon: true };
+      showCenterIcon: true,
+
+      hint: '登录后可以完整使用部门物品申领、审批服务。首次使用，需要授权获取您的手机号进行登录绑定。' };
 
   },
   onLoad: function onLoad() {},
   onShow: function onShow() {var _this = this;
+    this.user_phone = uni.getStorageSync('key_phone_num');
+    this.openid = uni.getStorageSync('key_wx_openid');
+    this.user_auth = uni.getStorageSync('key_user_auth');
+
     uni.login({
       provider: 'weixin',
       success: function success(loginRes) {
@@ -276,15 +289,40 @@ var _default =
     successCb: function successCb(rsp) {
       console.log(rsp);
       if (rsp.data.error === 0) {
-
-
         this.openid = rsp.data.openid;
+        var is_login = rsp.data.is_login;
+        var user_auth = rsp.data.auth;
+
+        uni.setStorage({
+          key: 'key_user_auth',
+          data: user_auth });
+
+
         uni.setStorage({
           key: 'key_wx_openid',
           data: rsp.data.openid });
 
 
-        this.showPhoneModal('PhoneModal');
+        ////////				
+        if (is_login === '0') {
+          this.showPhoneModal('PhoneModal');
+        } else {
+          console.log('auth:' + user_auth);
+          uni.showLoading({
+            title: '登录中...' });
+
+          if (user_auth === '0') {
+            uni.hideLoading();
+            this.shouldShowContent = true;
+          } else if (user_auth === '1' || user_auth === '2' || user_auth === '3') {
+            uni.hideLoading();
+            uni.navigateTo({
+              url: '../approve/approve' });
+
+          } else {
+            this.showToast("未知错误!");
+          }
+        }
       }
     },
     failCb: function failCb(err) {
@@ -343,6 +381,8 @@ var _default =
     // 0: 普通用户， 1:主管,  2:办公室主任   3: 管理员
     successPhoneCb: function successPhoneCb(rsp) {
       console.log('api_phone success');
+      this.showCenterIcon = false;
+
       if (this.containsStr(rsp.errMsg, 'ok')) {
         uni.setStorage({
           key: 'key_phone_num',
@@ -354,11 +394,11 @@ var _default =
 
 
         var auth = rsp.data.auth;
-        console.log('auth: ' + auth);
+        console.log('phone cb auth: ' + auth);
         uni.hideLoading();
         if (auth === '0') {
           this.shouldShowContent = true;
-        } else {
+        } else if (auth === '1' || auth === '2' || auth === '3') {
           uni.navigateTo({
             url: '../approve/approve' });
 
@@ -383,8 +423,6 @@ var _default =
           success: function success(res) {} });
 
       } else {
-        this.showCenterIcon = false;
-
         uni.showLoading({
           title: '跳转中' });
 

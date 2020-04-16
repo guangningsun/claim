@@ -20,7 +20,9 @@
 			"style": {}
 		}, {
 			"path": "pages/approve/approve",
-			"style": {}
+			"style": {
+				"enablePullDownRefresh": true
+			}
 		}, {
 			"path": "pages/approve/approve_detail",
 			"style": {}
@@ -34,7 +36,11 @@
 			"path": "pages/category/category_detail_list",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/category/category_all",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

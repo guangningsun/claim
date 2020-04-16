@@ -208,6 +208,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -216,14 +235,18 @@ var _default =
 
       approve_list: [],
 
-      reject_reason: '' };
+      reject_reason: '',
+
+      showEmpty: false };
 
   },
-
   onLoad: function onLoad() {
     this.initData();
   },
-
+  onPullDownRefresh: function onPullDownRefresh() {
+    console.log('onPullDownRefresh!!!!');
+    this.initData();
+  },
   methods: {
     initData: function initData() {
       var params = {
@@ -267,6 +290,9 @@ var _default =
           return item;
         });
         this.approve_list = result;
+        if (this.approve_list.length == 0) {
+          this.showEmpty = true;
+        }
         console.log(this.approve_list);
       }
     },
@@ -285,7 +311,6 @@ var _default =
       console.log('success cb');
       this.initData();
       if (rsp.data.error === 0) {
-
       }
     },
     failStatusCb: function failStatusCb(err) {
