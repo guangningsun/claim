@@ -213,3 +213,5 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 CSRF_TRUSTED_ORIGINS = ['brilliantlife.com.cn']
+
+CONF_DIR = os.path.join(BASE_DIR, "conf/claim_server.conf")

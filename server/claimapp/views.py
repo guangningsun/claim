@@ -17,8 +17,9 @@ import hashlib,urllib,random,logging,requests,base64
 import json,time,django_filters,xlrd,uuid
 from rest_framework import status
 import time, datetime
-import requests
+import requests,configparser
 from AppModel.WXBizDataCrypt import WXBizDataCrypt 
+from django.conf import settings
 
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,11 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
+conf_dir = settings.CONF_DIR
+cf = configparser.ConfigParser()
+cf.read(conf_dir)
+logger.info("成功加载配置文件 %s " % (conf_dir))
 
 # 内部方法用于返回json消息
 # done
@@ -74,6 +80,7 @@ def claim_asset(request):
         claim_list = request.POST['choose_list']
         category = request.POST['category']
         reason = request.POST['reason']
+        claim_weixin_openid = request.POST['claim_weixin_openid']
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
@@ -99,6 +106,7 @@ def claim_asset(request):
             # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
             cr.desc = reason
+            cr.claim_weixin_openid = claim_weixin_openid
             cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
@@ -162,29 +170,34 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
+                # 通知申领结果
+                # clr.get_desc()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","主管未通过")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="2"
                 clr.save()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过主管审批，待管理员审批")
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="3"
                 clr.save()
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过管理员审批，待领取")
             elif userinfo.auth == "3" and is_rejectted:
                 # 管理员未通过审批则将状态改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
-            
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","管理员未通过审批")
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="4"
                 clr.desc=reason
                 clr.save()
-            
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已成功领取")
             res_json = {"error": 0,"msg": "status success changed"}
             return Response(res_json)
         except:
@@ -272,24 +285,34 @@ def commoditycategory_detail(request):
 @api_view(['POST'])
 def weixin_sns(request,js_code):
     if request.method == 'POST':
-        APPID = 'wx1010e77892dd6991'
-        SECRET = '16704cf51186b336da15ed9f67cc7401'
+        APPID = cf.get("WEIXIN", "weixin_appid")
+        SECRET = cf.get("WEIXIN", "weixin_secret")
         JSCODE = js_code
+        logger.debug("获取appid %s  secret %s" % (APPID,SECRET))
         requst_data = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code"
         req = requests.get(requst_data)
+        logger.debug("拼接的微信登录url 为 %s" % (requst_data ))
         if req.status_code == 200:
             openid = json.loads(req.content)['openid']
             session_key = json.loads(req.content)['session_key']
             # WeixinSessionKey.objects.update_or_create(weixin_openid=openid,
             #                                         weixin_sessionkey=session_key)
+            is_login = "1"
+            user_auth = "0"
             try:
                 wsk = WeixinSessionKey.objects.get(weixin_openid=openid)
                 wsk.weixin_sessionkey = session_key
                 wsk.save()
+                userinfo = UserInfo.objects.get(weixin_openid=openid)
+                # 增加用户是否已登录
+                is_login = "1"
+                user_auth = userinfo.auth
             except WeixinSessionKey.DoesNotExist:
                 cwsk = WeixinSessionKey(weixin_openid=openid,weixin_sessionkey=session_key)
                 cwsk.save()
-            return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\"}",
+                is_login = "0"
+
+            return HttpResponse("{\"error\":0,\"msg\":\"登录成功\",\"openid\":\""+openid+"\",\"is_login\":\""+is_login+"\",\"auth\":\""+user_auth+"\"}",
                             content_type='application/json',)
         else:
             return Response(_generate_json_message(False,"code 无效"))
@@ -299,7 +322,7 @@ def weixin_sns(request,js_code):
 @api_view(['POST'])
 def weixin_gusi(request):
     if request.method == 'POST':
-        appId = 'wx1010e77892dd6991'
+        appId = cf.get("WEIXIN", "weixin_appid")
         openid = request.POST['openid']
         try:
             sessionKey = WeixinSessionKey.objects.get(weixin_openid=openid).weixin_sessionkey
@@ -324,4 +347,32 @@ def weixin_gusi(request):
         except:
             pass
 
-    
+
+def __weixin_send_message(touser,date3,thing6,phrase1):
+    # get access token
+    APPID = cf.get("WEIXIN", "weixin_appid")
+    SECRET = cf.get("WEIXIN", "weixin_secret")
+    get_access_token_request_data = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+APPID+"&secret="+SECRET+""
+    req_access = requests.get(get_access_token_request_data)
+    access_token = json.loads(req_access.content)['access_token']
+    body = {
+            "access_token":access_token,
+            "touser": touser,
+            "template_id": cf.get("WEIXIN", "weixin_template_id"),
+            "miniprogram_state": cf.get("WEIXIN", "miniprogram_state"),
+            "data":{
+                "date3": {
+                    "value": date3
+                },
+                "thing6":{
+                    "value": thing6
+                },
+                "phrase1":{
+                    "value": phrase1
+                }
+            }
+
+    }
+    requst_data = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+access_token+""
+    response = requests.post(requst_data, data = json.dumps(body))
+    return 0

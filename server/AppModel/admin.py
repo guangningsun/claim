@@ -30,7 +30,7 @@ class AssetInfoAdmin(ImportExportModelAdmin):
     # list_editable = ['asset_name','asset_count']
     search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu')
     fieldsets = [
-       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu'], 'classes': ['']}),
     ]
     list_display_links = ('asset_name',)
     list_per_page = 10
@@ -45,7 +45,7 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
 
     # search_fields =('claim_count','claim_name','claim_date','category',"approval_status")
     fieldsets = [
-       ('用户数据', {'fields': ['claim_date','category',"approval_status",'desc'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['claim_date','category',"approval_status",'desc'], 'classes': ['']}),
     ]
     list_display_links = ('id',)
     list_per_page = 15
@@ -152,7 +152,7 @@ class UserInfoAdmin(ImportExportModelAdmin):
     list_display=['id','nick_name','user_name','weixin_openid','phone_number','category','auth']
     search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth')
     fieldsets = [
-       ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth'], 'classes': ['collapse']}),
+       ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth'], 'classes': ['']}),
     ]
     list_per_page = 15
 
