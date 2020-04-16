@@ -292,6 +292,9 @@ def commoditycategory_detail(request):
         serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
         # import pdb;pdb.set_trace()
         for i in range(0,len(serializer.data)):
+            assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id'])
+            asset_serializer = AssetSerializer(assetset, many=True)
+            serializer.data[i]["asset_info"]= asset_serializer.data
             if serializer.data[i]['parent'] == None:
                 serializer.data[i]['parent'] = '-'
             if serializer.data[i]['image'] == None:
