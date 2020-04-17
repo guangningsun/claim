@@ -258,7 +258,7 @@ def get_approval_list(request):
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
                         elif v == "1":
-                            serializer.data[i]['approval_status'] = "待综合办主管审批"
+                            serializer.data[i]['approval_status'] = "待主任审批"
                         elif v == "2":
                             serializer.data[i]['approval_status'] = "待管理员审批"
                         elif v == "3":
@@ -298,7 +298,7 @@ def get_approval_list(request):
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
                         elif v == "1":
-                            serializer.data[i]['approval_status'] = "待综合办主管审批"
+                            serializer.data[i]['approval_status'] = "待主任审批"
                         elif v == "2":
                             serializer.data[i]['approval_status'] = "待管理员审批"
                         elif v == "3":
@@ -338,7 +338,7 @@ def get_approval_list(request):
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
                         elif v == "1":
-                            serializer.data[i]['approval_status'] = "待综合办主管审批"
+                            serializer.data[i]['approval_status'] = "待主任审批"
                         elif v == "2":
                             serializer.data[i]['approval_status'] = "待管理员审批"
                         elif v == "3":
