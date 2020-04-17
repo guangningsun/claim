@@ -65,7 +65,7 @@ class Claimlist(models.Model):
 class ClaimRecord(models.Model):
     STATUS_CHOICES = [
     ('0', '待主管审批'),
-    ('1', '待综合办主管审批'),
+    ('1', '待主任审批'),
     ('2', '待管理员审批'),
     ('3', '审批完成'),
     ('4', '已发放'),

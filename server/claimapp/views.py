@@ -81,7 +81,7 @@ def claim_asset(request):
         category = request.POST['category']
         reason = request.POST['reason']
         claim_weixin_openid = request.POST['claim_weixin_openid']
-        if_need_explanation = False
+        # if_need_explanation = False
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
@@ -94,8 +94,8 @@ def claim_asset(request):
                 if int(assetinfo.asset_count)<int(claim_count):
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
                 # 如果申请数量大于该物品限制则转交主管审批
-                if int(claim_count) > int(assetinfo.asset_limit_nu):
-                    if_need_explanation = True
+                # if int(claim_count) > int(assetinfo.asset_limit_nu):
+                #     if_need_explanation = True
                 #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
                 # 资产管理减少指定数量物品
@@ -109,10 +109,10 @@ def claim_asset(request):
             cr.category=Category.objects.get(id=category)
             cr.desc = reason
             cr.claim_weixin_openid = claim_weixin_openid
-            if if_need_explanation:
-                cr.approval_status = '1'
-            else:
-                cr.approval_status = '0'
+            # if if_need_explanation:
+            #     cr.approval_status = '1'
+            # else:
+            cr.approval_status = '0'
             cr.save()
             return _generate_json_message(True, "申领成功")
         except :
@@ -176,14 +176,13 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
-                # clr.get_desc()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","主管未通过")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主管未通过")
             elif userinfo.auth == "2" and not is_rejectted:
                 # 主任通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="2"
                 clr.save()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过主任审批，待管理员审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主任审批，待管理员审批")
             if userinfo.auth == "2" and is_rejectted:
                 # 主任未通过审批则将状态更改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -192,13 +191,16 @@ def change_approval_status(request):
                 clr.save()
                 # 通知申领结果
                 # clr.get_desc()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","主任未通过审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主任未通过审批")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
+                #if 在范围内
                 clr.approval_status="2"
+                # 在限额以外
+                #clr.approval_status="1"
                 clr.save()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过主管审批，待管理员审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -271,15 +273,81 @@ def get_approval_list(request):
             return Response(res_json)
         # 待主任审批
         elif auth == "2":
-            claimset = ClaimRecord.objects.filter(approval_status=1)
+            # claimset = ClaimRecord.objects.filter(approval_status=1)
+            # serializer = ClaimSerializer(claimset, many=True)
+            # res_json = {"error": 0,"msg": {
+            #             "approval_list_info": serializer.data }}
+            # return Response(res_json)
+            cid = UserInfo.objects.get(weixin_openid=openid).category
+            claimset = ClaimRecord.objects.filter(approval_status=1).filter(category=cid)
             serializer = ClaimSerializer(claimset, many=True)
+            for i in range (0,len(serializer.data)):
+                for k,v in serializer.data[i].items():
+                    if k == "claim_list":
+                        cl =[]
+                        for cli in v:
+                            cl_obj = Claimlist.objects.get(id=cli)
+                            col_data = cl_obj.claim_count+cl_obj.claim_unit
+                            dic = {}
+                            dic[Claimlist.objects.get(id=cli).claim_name]=col_data
+                            cl.append(dic)
+                        serializer.data[i]['claim_list'] = cl
+                    if k == "category":
+                        serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    if k == "approval_status":
+                        if v == "0":
+                            serializer.data[i]['approval_status'] = "待主管审批"
+                        elif v == "1":
+                            serializer.data[i]['approval_status'] = "待综合办主管审批"
+                        elif v == "2":
+                            serializer.data[i]['approval_status'] = "待管理员审批"
+                        elif v == "3":
+                            serializer.data[i]['approval_status'] = "审批完成"
+                        elif v == "4":
+                            serializer.data[i]['approval_status'] = "已发放"
+                        elif v == "5":
+                            serializer.data[i]['approval_status'] = "未批准"
+
             res_json = {"error": 0,"msg": {
                         "approval_list_info": serializer.data }}
             return Response(res_json)
         # 待管理员审理
         elif auth == "3":
-            claimset = ClaimRecord.objects.filter(approval_status=2)
+            # claimset = ClaimRecord.objects.filter(approval_status=2)
+            # serializer = ClaimSerializer(claimset, many=True)
+            # res_json = {"error": 0,"msg": {
+            #             "approval_list_info": serializer.data }}
+            # return Response(res_json)
+            cid = UserInfo.objects.get(weixin_openid=openid).category
+            claimset = ClaimRecord.objects.filter(approval_status=2).filter(category=cid)
             serializer = ClaimSerializer(claimset, many=True)
+            for i in range (0,len(serializer.data)):
+                for k,v in serializer.data[i].items():
+                    if k == "claim_list":
+                        cl =[]
+                        for cli in v:
+                            cl_obj = Claimlist.objects.get(id=cli)
+                            col_data = cl_obj.claim_count+cl_obj.claim_unit
+                            dic = {}
+                            dic[Claimlist.objects.get(id=cli).claim_name]=col_data
+                            cl.append(dic)
+                        serializer.data[i]['claim_list'] = cl
+                    if k == "category":
+                        serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    if k == "approval_status":
+                        if v == "0":
+                            serializer.data[i]['approval_status'] = "待主管审批"
+                        elif v == "1":
+                            serializer.data[i]['approval_status'] = "待综合办主管审批"
+                        elif v == "2":
+                            serializer.data[i]['approval_status'] = "待管理员审批"
+                        elif v == "3":
+                            serializer.data[i]['approval_status'] = "审批完成"
+                        elif v == "4":
+                            serializer.data[i]['approval_status'] = "已发放"
+                        elif v == "5":
+                            serializer.data[i]['approval_status'] = "未批准"
+
             res_json = {"error": 0,"msg": {
                         "approval_list_info": serializer.data }}
             return Response(res_json)
