@@ -28,12 +28,12 @@ logger.addHandler(handler)
 class AssetInfoAdmin(ImportExportModelAdmin):
     list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu']
     # list_editable = ['asset_name','asset_count']
-    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu')
+    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu')
     fieldsets = [
        ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu'], 'classes': ['']}),
     ]
     list_display_links = ('asset_name',)
-    list_per_page = 10
+    list_per_page = 20
 
 
 # 申领记录管理
