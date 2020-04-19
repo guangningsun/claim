@@ -162,7 +162,7 @@ def claim_detail(request):
 def change_approval_status(request):
     if request.method == 'POST':
         openid = request.POST['openid']
-        is_rejectted = request.POST['is_rejectted']
+        is_rejectted = bool(request.POST['is_rejectted'])
         is_finished = request.POST['is_finished']
         reason = request.POST['reason']
         record_id = request.POST['record_id']
