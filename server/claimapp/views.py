@@ -176,6 +176,7 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 # 通知申领结果
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主管未通过")
                 # 通知审批人结果
@@ -186,6 +187,7 @@ def change_approval_status(request):
                 clr.approval_status="2"
                 clr.save()
                 # 通知申领人
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主任审批，待管理员审批")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
@@ -196,6 +198,7 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主任未通过审批")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
@@ -209,6 +212,7 @@ def change_approval_status(request):
                     #if 在范围内
                     clr.approval_status="2"
                 clr.save()
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
@@ -218,6 +222,7 @@ def change_approval_status(request):
                 clr.approval_status="3"
                 clr.save()
                 # 通知申领结果
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过管理员审批，待领取")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
@@ -228,6 +233,7 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","管理员未通过审批")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
@@ -237,6 +243,7 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已成功领取")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
