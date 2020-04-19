@@ -188,7 +188,7 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
-                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=record_id)
+                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=clr)
                 for mc in mc_list:
                     claimlist_obj = Claimlist.objects.get(id=mc.claimlist_id)
                     cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
@@ -203,6 +203,11 @@ def change_approval_status(request):
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="2"
                 clr.save()
+                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=clr)
+                for mc in mc_list:
+                    claimlist_obj = Claimlist.objects.get(id=mc.claimlist_id)
+                    cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
+                    __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 # 通知申领人
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主任审批，待管理员审批")
@@ -214,6 +219,11 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
+                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=clr)
+                for mc in mc_list:
+                    claimlist_obj = Claimlist.objects.get(id=mc.claimlist_id)
+                    cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
+                    __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 # 通知申领结果
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主任未通过审批")
@@ -250,6 +260,11 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
+                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=clr)
+                for mc in mc_list:
+                    claimlist_obj = Claimlist.objects.get(id=mc.claimlist_id)
+                    cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
+                    __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","管理员未通过审批")
                 # 通知审批人结果
