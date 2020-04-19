@@ -93,8 +93,9 @@ def claim_asset(request):
                 # 查看申领物品剩余是否足量
                 if int(assetinfo.asset_count)<int(claim_count):
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
-                # 如果申请数量大于该物品限制则转交主管审批
-                # if int(claim_count) > int(assetinfo.asset_limit_nu):
+                # 如果申请数量大于该物品限制则超限标准设置为true，转交主管审批
+                if int(claim_count) > int(assetinfo.asset_limit_nu):
+                    cr.if_exceed_standard = True
                 #     if_need_explanation = True
                 #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
@@ -201,10 +202,12 @@ def change_approval_status(request):
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
-                #if 在范围内
-                clr.approval_status="2"
-                # 在限额以外
-                #clr.approval_status="1"
+                #如果申领物品在限额以外
+                if clr.if_exceed_standard:
+                    clr.approval_status="1"
+                else:
+                    #if 在范围内
+                    clr.approval_status="2"
                 clr.save()
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
                 # 通知审批人结果

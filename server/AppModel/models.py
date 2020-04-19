@@ -82,6 +82,7 @@ class ClaimRecord(models.Model):
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
     approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
     desc =  models.CharField(max_length=200, verbose_name='申请理由',default="无理由")
+    if_exceed_standard = models.BooleanField(verbose_name='是否超标',default="False") 
 
     class Meta:
         verbose_name = '领用记录'
