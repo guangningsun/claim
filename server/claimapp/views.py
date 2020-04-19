@@ -158,6 +158,16 @@ def claim_detail(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+def __restore_quantity(claim_name, claim_count):
+    assetinfo = AssetInfo.objects.get(asset_name=claim_name)
+    assetinfo.asset_count = int(assetinfo.asset_count) + int(claim_count)
+    assetinfo.save()
+    logger.info("恢复申请商品 %s  的数量 %s " % (claim_name , claim_count))
+    return 0
+
+
+
 # 修改申请状态
 @api_view(['POST'])
 def change_approval_status(request):
@@ -178,6 +188,9 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
+                for cli in clr.claimlist:
+                    cl_obj = Claimlist.objects.get(id=cli)
+                    __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 # 通知申领结果
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主管未通过")
