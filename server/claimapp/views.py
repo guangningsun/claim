@@ -96,6 +96,7 @@ def claim_asset(request):
                 # 如果申请数量大于该物品限制则超限标准设置为true，转交主管审批
                 if int(claim_count) > int(assetinfo.asset_limit_nu):
                     cr.if_exceed_standard = True
+                    logger.info("申请商品 %s 数量  %s 大于限制数量 %s 将是否超限设置为 %s" % (claim_name,claim_count,assetinfo.asset_limit_nu, cr.if_exceed_standard))
                 #     if_need_explanation = True
                 #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
@@ -162,7 +163,7 @@ def claim_detail(request):
 def change_approval_status(request):
     if request.method == 'POST':
         openid = request.POST['openid']
-        is_rej = bool(request.POST['is_rejectted'])
+        is_rej = request.POST['is_rejectted']
         is_rejectted = True if is_rej.lower() == 'true' else False
         is_finished = request.POST['is_finished']
         reason = request.POST['reason']
@@ -213,7 +214,7 @@ def change_approval_status(request):
                     #if 在范围内
                     clr.approval_status="2"
                 clr.save()
-                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
+                logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s 是否超限额 %s " % (userinfo.auth , is_rejectted,clr.approval_status,clr.if_exceed_standard))
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
                 # 通知审批人结果
                 ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
