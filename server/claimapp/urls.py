@@ -12,6 +12,7 @@ urlpatterns = [
     path('weixin_gusi/', views.weixin_gusi),
     
     re_path(r'^media/(?P<path>.+)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^prcode/(?P<path>.+)$', serve, {'document_root': settings.PRCODE_ROOT}),
     path('asset/', views.asset_detail),
     path('asset/<int:cid>', views.asset_by_cid),
     path('userinfo/', views.userinfo_detail),

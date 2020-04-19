@@ -211,6 +211,9 @@ MPTT_ADMIN_LEVEL_INDENT = 20
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+PRCODE_ROOT = os.path.join(BASE_DIR, 'prcode')
+PRCODE_URL = '/prcode/'
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
