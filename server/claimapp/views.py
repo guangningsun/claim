@@ -188,8 +188,10 @@ def change_approval_status(request):
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
-                for cli in clr.claimlist:
-                    cl_obj = Claimlist.objects.get(id=cli)
+                mc_list = MappingClaimLisToRecord.objects.filter(claimrecord=record_id)
+                for mc in mc_list:
+                    claimlist_obj = Claimlist.objects.get(id=mc.claimlist_id)
+                    cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
                     __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 # 通知申领结果
