@@ -185,6 +185,10 @@ SIMPLEUI_CONFIG = {
             'name': '物品分类管理',
             'url': 'AppModel/commoditycategory/',
             'icon': 'far fa-surprise'
+        }, {
+            'name': '统计查询',
+            'url': 'AppModel/commoditycategory/',
+            'icon': 'fa fa-bell-slash'
         }]
         },{
         'app': 'auth',

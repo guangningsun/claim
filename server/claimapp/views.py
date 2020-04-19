@@ -177,12 +177,17 @@ def change_approval_status(request):
                 clr.save()
                 # 通知申领结果
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主管未通过")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             elif userinfo.auth == "2" and not is_rejectted:
                 # 主任通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="2"
                 clr.save()
+                # 通知申领人
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主任审批，待管理员审批")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             if userinfo.auth == "2" and is_rejectted:
                 # 主任未通过审批则将状态更改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -190,8 +195,9 @@ def change_approval_status(request):
                 clr.desc=reason
                 clr.save()
                 # 通知申领结果
-                # clr.get_desc()
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主任未通过审批")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -201,25 +207,36 @@ def change_approval_status(request):
                 #clr.approval_status="1"
                 clr.save()
                 ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="3"
                 clr.save()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已通过管理员审批，待领取")
+                # 通知申领结果
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过管理员审批，待领取")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             elif userinfo.auth == "3" and is_rejectted:
                 # 管理员未通过审批则将状态改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="5"
                 clr.desc=reason
                 clr.save()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","管理员未通过审批")
+                # 通知申领结果
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","管理员未通过审批")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="4"
                 clr.desc=reason
                 clr.save()
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"tttttt","已成功领取")
+                # 通知申领结果
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已成功领取")
+                # 通知审批人结果
+                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
             res_json = {"error": 0,"msg": "status success changed"}
             return Response(res_json)
         except:
