@@ -111,6 +111,10 @@ def claim_asset(request):
             cr.category=Category.objects.get(id=category)
             cr.desc = reason
             cr.claim_weixin_openid = claim_weixin_openid
+            # 通知申领结果
+            ret = __weixin_send_message(claim_weixin_openid,str(cr.claim_date),"物品申领","待主管审批")
+            # 通知审批人结果
+            #ret1 = __weixin_send_message(openid,str(clr.claim_date),"物品申领","您有一条待审批通知")
             # if if_need_explanation:
             #     cr.approval_status = '1'
             # else:
@@ -195,9 +199,9 @@ def change_approval_status(request):
                     __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
                 # 通知申领结果
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主管未通过")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","主管未通过")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             elif userinfo.auth == "2" and not is_rejectted:
                 # 主任通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -210,9 +214,9 @@ def change_approval_status(request):
                     __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 # 通知申领人
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主任审批，待管理员审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","已通过主任审批")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             if userinfo.auth == "2" and is_rejectted:
                 # 主任未通过审批则将状态更改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -226,9 +230,9 @@ def change_approval_status(request):
                     __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 # 通知申领结果
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","主任未通过审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","主任未通过审批")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             elif userinfo.auth == "1" and not is_rejectted:
                 # 主管通过审批则将状态更改为 2待管理员审批
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -240,9 +244,9 @@ def change_approval_status(request):
                     clr.approval_status="2"
                 clr.save()
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s 是否超限额 %s " % (userinfo.auth , is_rejectted,clr.approval_status,clr.if_exceed_standard))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过主管审批，待管理员审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","已通过主管审批待管理员审批")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             elif userinfo.auth == "3" and not is_rejectted:
                 # 管理员通过审批则将状态改为 3 审批完成待发放
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -250,9 +254,9 @@ def change_approval_status(request):
                 clr.save()
                 # 通知申领结果
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已通过管理员审批，待领取")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","已通过管理员审批待领取")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             elif userinfo.auth == "3" and is_rejectted:
                 # 管理员未通过审批则将状态改为 5拒绝申请
                 clr = ClaimRecord.objects.get(id=record_id)
@@ -266,9 +270,9 @@ def change_approval_status(request):
                     cl_obj = Claimlist.objects.get(id=claimlist_obj.id)
                     __restore_quantity(cl_obj.claim_name,cl_obj.claim_count)
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","管理员未通过审批")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","管理员未通过审批")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             if userinfo.auth == "3" and is_finished:
                 clr = ClaimRecord.objects.get(id=record_id)
                 clr.approval_status="4"
@@ -276,9 +280,9 @@ def change_approval_status(request):
                 clr.save()
                 # 通知申领结果
                 logger.info("用户权限为 %s  进行了rejectted操作  %s 审批状态更改为 %s" % (userinfo.auth , is_rejectted,clr.approval_status))
-                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"","已成功领取")
+                ret = __weixin_send_message(clr.claim_weixin_openid,str(clr.claim_date),"物品申领","已成功领取")
                 # 通知审批人结果
-                ret = __weixin_send_message(openid,str(clr.claim_date),"","您有一条待审批通知")
+                ret1 = __weixin_send_message(openid,str(clr.claim_date),"审批通知","您有一条待审批通知")
             res_json = {"error": 0,"msg": "status success changed"}
             return Response(res_json)
         except:
@@ -525,4 +529,5 @@ def __weixin_send_message(touser,date3,thing6,phrase1):
     }
     requst_data = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+access_token+""
     response = requests.post(requst_data, data = json.dumps(body))
+    logger.info("通知用户 %s  内容为 %s  微信服务器返回结果为 %s" % (touser, json.dumps(body),response.content))
     return 0

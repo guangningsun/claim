@@ -189,3 +189,9 @@ class WeixinSessionKey(models.Model):
     class Meta:
         verbose_name = '微信用户SK'
         verbose_name_plural = '微信用户SK'
+
+# 统计查询
+class StatisticsInfo(models.Model):
+  asset_name = models.CharField(max_length=120,verbose_name='物品名称')
+  category_name = models.CharField(max_length=120,verbose_name='部门名称')
+  claim_count = models.CharField(max_length=120,verbose_name='领用数量')

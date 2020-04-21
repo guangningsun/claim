@@ -158,6 +158,38 @@ class UserInfoAdmin(ImportExportModelAdmin):
 
 
 
+# 用户管理
+@admin.register(StatisticsInfo)
+class StatisticsInfoAdmin(ImportExportModelAdmin): 
+    # list_display=['asset_name','category_name','claim_count']
+
+    # list_per_page = 10
+    change_list_template = 'admin_test.html'
+ 
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(
+            request,
+            extra_context=extra_context
+        )
+ 
+        try:
+            qs = response.context_data['cl'].queryset
+        except (AttributeError, KeyError):
+            return response
+ 
+        metrics = {
+            'days': "", # date是model累的字段
+            'views_count': "", # views_count是model累的字段
+            'ip_count': "", # ip_count是model累的字段
+ 
+        }
+        # response.context_data['asset_name'] = list(
+        #     qs.values('asset_name').annotate(**metrics)
+        # )
+ 
+        return response
+
+
 
 # 组织机构设置
 @admin.register(Post)

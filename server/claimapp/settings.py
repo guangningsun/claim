@@ -187,7 +187,7 @@ SIMPLEUI_CONFIG = {
             'icon': 'far fa-surprise'
         }, {
             'name': '统计查询',
-            'url': 'AppModel/commoditycategory/',
+            'url': 'AppModel/statisticsinfo/',
             'icon': 'fa fa-bell-slash'
         }]
         },{
