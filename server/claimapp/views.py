@@ -114,11 +114,11 @@ def claim_asset(request):
             # 通知申领结果
             ret = __weixin_send_message(claim_weixin_openid,str(cr.claim_date),"物品申领","待审批")
             # 通知审批人结果
-            #ret1 = __weixin_send_message(openid,str(clr.claim_date),"物品申领","您有一条待审批通知")
+            #ret1 = __weixin_send_message(openid, str(clr.claim_date),"物品申领","您有一条待审批通知")
             # if if_need_explanation:
             #     cr.approval_status = '1'
             # else:
-            
+
             # 如果申领物品超限则给主管审批，如果未超限则直接给管理员审批
             if cr.if_exceed_standard:
                 cr.approval_status = '0'
@@ -347,7 +347,8 @@ def get_approval_list(request):
             #             "approval_list_info": serializer.data }}
             # return Response(res_json)
             cid = UserInfo.objects.get(weixin_openid=openid).category
-            claimset = ClaimRecord.objects.filter(approval_status=1).filter(category=cid)
+            #claimset = ClaimRecord.objects.filter(approval_status=1).filter(category=cid)
+            claimset = ClaimRecord.objects.filter(approval_status=1)
             serializer = ClaimSerializer(claimset, many=True)
             for i in range (0,len(serializer.data)):
                 for k,v in serializer.data[i].items():
@@ -360,8 +361,8 @@ def get_approval_list(request):
                             dic[Claimlist.objects.get(id=cli).claim_name]=col_data
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
-                    if k == "category":
-                        serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    # if k == "category":
+                    #     serializer.data[i]['category'] = Category.objects.get(id=v).name
                     if k == "approval_status":
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
@@ -387,7 +388,8 @@ def get_approval_list(request):
             #             "approval_list_info": serializer.data }}
             # return Response(res_json)
             cid = UserInfo.objects.get(weixin_openid=openid).category
-            claimset = ClaimRecord.objects.filter(approval_status=2).filter(category=cid)
+            #claimset = ClaimRecord.objects.filter(approval_status=2).filter(category=cid)
+            claimset = ClaimRecord.objects.filter(approval_status=2)
             serializer = ClaimSerializer(claimset, many=True)
             for i in range (0,len(serializer.data)):
                 for k,v in serializer.data[i].items():
@@ -400,8 +402,8 @@ def get_approval_list(request):
                             dic[Claimlist.objects.get(id=cli).claim_name]=col_data
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
-                    if k == "category":
-                        serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    # if k == "category":
+                    #     serializer.data[i]['category'] = Category.objects.get(id=v).name
                     if k == "approval_status":
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
