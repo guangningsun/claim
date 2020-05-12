@@ -122,8 +122,14 @@ def claim_asset(request):
             # 如果申领物品超限则给主管审批，如果未超限则直接给管理员审批
             if cr.if_exceed_standard:
                 cr.approval_status = '0'
+                zhuguanlist = UserInfo.objects.filter(auth='1').filter(category=category)
+                for zhuguan in zhuguanlist:
+                    ret1 = __weixin_send_message(zhuguan.weixin_openid, str(clr.claim_date),"物品申领","您有一条待审批通知")
             else:
                 cr.approval_status = '2'
+                userinfoset = UserInfo.objects.filter(auth='3')
+                for userinfo in userinfoset:
+                    ret1 = __weixin_send_message(userinfo.weixin_openid, str(clr.claim_date),"物品申领","您有一条待审批通知")
             cr.save()
             return _generate_json_message(True, "申领成功")
         except :
