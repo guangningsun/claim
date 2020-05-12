@@ -112,13 +112,18 @@ def claim_asset(request):
             cr.desc = reason
             cr.claim_weixin_openid = claim_weixin_openid
             # 通知申领结果
-            ret = __weixin_send_message(claim_weixin_openid,str(cr.claim_date),"物品申领","待主管审批")
+            ret = __weixin_send_message(claim_weixin_openid,str(cr.claim_date),"物品申领","待审批")
             # 通知审批人结果
             #ret1 = __weixin_send_message(openid,str(clr.claim_date),"物品申领","您有一条待审批通知")
             # if if_need_explanation:
             #     cr.approval_status = '1'
             # else:
-            cr.approval_status = '0'
+            
+            # 如果申领物品超限则给主管审批，如果未超限则直接给管理员审批
+            if cr.if_exceed_standard:
+                cr.approval_status = '0'
+            else:
+                cr.approval_status = '2'
             cr.save()
             return _generate_json_message(True, "申领成功")
         except :
