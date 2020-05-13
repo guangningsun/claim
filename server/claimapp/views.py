@@ -190,7 +190,8 @@ def change_approval_status(request):
         openid = request.POST['openid']
         is_rej = request.POST['is_rejectted']
         is_rejectted = True if is_rej.lower() == 'true' else False
-        is_finished = request.POST['is_finished']
+        is_fin = request.POST['is_finished']
+        is_finished = True if is_fin.lower() == 'true' else False
         reason = request.POST['reason']
         record_id = request.POST['record_id']
         #通过openid获取该用户所在部门category和权限auth
