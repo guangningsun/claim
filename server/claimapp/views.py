@@ -367,8 +367,8 @@ def get_approval_list(request):
                             dic[Claimlist.objects.get(id=cli).claim_name]=col_data
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
-                    # if k == "category":
-                    #     serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    if k == "category":
+                        serializer.data[i]['category'] = Category.objects.get(id=v).name
                     if k == "approval_status":
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
@@ -408,8 +408,8 @@ def get_approval_list(request):
                             dic[Claimlist.objects.get(id=cli).claim_name]=col_data
                             cl.append(dic)
                         serializer.data[i]['claim_list'] = cl
-                    # if k == "category":
-                    #     serializer.data[i]['category'] = Category.objects.get(id=v).name
+                    if k == "category":
+                        serializer.data[i]['category'] = Category.objects.get(id=v).name
                     if k == "approval_status":
                         if v == "0":
                             serializer.data[i]['approval_status'] = "待主管审批"
