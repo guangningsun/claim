@@ -33,7 +33,7 @@ logger.addHandler(handler)
 
 conf_dir = settings.CONF_DIR
 cf = configparser.ConfigParser()
-cf.read(conf_dir)
+cf.read(conf_dir,encoding='utf-8')
 logger.info("成功加载配置文件 %s " % (conf_dir))
 
 # 内部方法用于返回json消息
@@ -134,7 +134,7 @@ def claim_asset(request):
             return _generate_json_message(True, "申领成功")
         except :
             return _generate_json_message(False, "仓库中没有该类型商品")
-    
+
 
 # 用户注册功能
 @api_view(['GET', 'POST'])
