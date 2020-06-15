@@ -172,23 +172,27 @@ SIMPLEUI_CONFIG = {
         },{
             'name': '部门管理',
             'url': 'AppModel/category',
-            'icon': 'fa fa-tags'
+            'icon': 'fa fa-server'
         }, {
             'name': '领用记录',
             'url': 'AppModel/claimrecord',
-            'icon': 'fa fa-id-card'
+            'icon': 'fa fa-server'
         }, {
             'name': '用户管理',
             'url': 'AppModel/userinfo/',
-            'icon': 'fa fa-user-circle'
+            'icon': 'fa fa-server'
         }, {
             'name': '物品分类管理',
             'url': 'AppModel/commoditycategory/',
-            'icon': 'far fa-surprise'
+            'icon': 'fa fa-server'
         }, {
-            'name': '统计查询',
+            'name': '统计',
+            'url': 'AppModel/statisticchart/',
+            'icon': 'fa fa-server'
+        }, {
+            'name': '查询',
             'url': 'AppModel/statisticsinfo/',
-            'icon': 'fa fa-bell-slash'
+            'icon': 'fa fa-server'
         }]
         },{
         'app': 'auth',
