@@ -143,7 +143,11 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
         self.message_user(request," %s 成功拒绝." % message_bit, level=messages.SUCCESS)
     rejectted.short_description = "拒绝审批"
 
-    
+
+
+# 物品领用统计表统计
+def _statistic_asset_claim():
+    pass  
 
 
 # 用户管理
@@ -157,8 +161,19 @@ class UserInfoAdmin(ImportExportModelAdmin):
     list_per_page = 15
 
 
+ 
+# 统计列表展示
+@admin.register(StatisticChart)
+class StatisticChartAdmin(ImportExportModelAdmin): 
+    list_display=['id','category','month','year','asset_name','claim_count']
+    search_fields =('category','month','year','asset_name','claim_count')
+    fieldsets = [
+       ('用户数据', {'fields': ['category','month','year','asset_name','claim_count'], 'classes': ['']}),
+    ]
+    list_per_page = 15
 
-# 用户管理
+
+# 查询图展示
 @admin.register(StatisticsInfo)
 class StatisticsInfoAdmin(ImportExportModelAdmin): 
     # list_display=['asset_name','category_name','claim_count']

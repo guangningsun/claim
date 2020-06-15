@@ -28,3 +28,9 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
         fields = ('id','name','parent','slug','image')
+
+class CategorySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Category
+        fields = ('name','parent','slug')
