@@ -42,6 +42,7 @@ class AssetInfo(models.Model):
     asset_image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
     asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
+    asset_limit_price = models.CharField(max_length=200,verbose_name='申领单价限制')
 
 
 
@@ -192,6 +193,29 @@ class WeixinSessionKey(models.Model):
 
 # 统计查询
 class StatisticsInfo(models.Model):
-  asset_name = models.CharField(max_length=120,verbose_name='物品名称')
-  category_name = models.CharField(max_length=120,verbose_name='部门名称')
-  claim_count = models.CharField(max_length=120,verbose_name='领用数量')
+    asset_name = models.CharField(max_length=120,verbose_name='物品名称')
+    category_name = models.CharField(max_length=120,verbose_name='部门名称')
+    claim_count = models.CharField(max_length=120,verbose_name='领用数量')
+
+
+# 领用数量统计表
+class StatisticChart(models.Model):
+    STATUS_CHOICES = [
+      ('1', '1'),
+      ('2', '2'),
+      ('3', '3'),
+      ('4', '4'),
+      ('5', '5'),
+      ('6', '6'),
+      ('7', '7'),
+      ('8', '8'),
+      ('9', '9'),
+      ('10', '10'),
+      ('11', '11'),
+      ('12', '12'),
+      ]
+    asset_name = models.CharField(max_length=120,verbose_name='物品名称')
+    category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='部门名称')
+    claim_count = models.CharField(max_length=120,verbose_name='领用数量')
+    year = models.CharField(max_length=120,verbose_name='年度')
+    month = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='月度')
