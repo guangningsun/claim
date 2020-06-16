@@ -12,6 +12,7 @@ from feincms.module.page.models import Page
 from django.utils.html import format_html,escape, mark_safe
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
+from django.db.models import Count,Sum
 
 
 logger = logging.getLogger(__name__)
@@ -144,12 +145,6 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
     rejectted.short_description = "拒绝审批"
 
 
-
-# 物品领用统计表统计
-def _statistic_asset_claim():
-    pass  
-
-
 # 用户管理
 @admin.register(UserInfo)
 class UserInfoAdmin(ImportExportModelAdmin): 
@@ -159,7 +154,6 @@ class UserInfoAdmin(ImportExportModelAdmin):
        ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth'], 'classes': ['']}),
     ]
     list_per_page = 15
-
 
  
 # 统计列表展示
@@ -171,6 +165,37 @@ class StatisticChartAdmin(ImportExportModelAdmin):
        ('用户数据', {'fields': ['category','month','year','asset_name','claim_count'], 'classes': ['']}),
     ]
     list_per_page = 15
+
+    # 物品领用统计表统计
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        
+        # 先拿到所有部门
+        category_list = Category.objects.filter(parent=1)
+        for category_info in category_list:
+            # 通过部门id拿到该部门的所有record id
+            claimrecord_list = ClaimRecord.objects.filter(category=category_info.id)
+            claim_id_list = []
+            for claimrecord in claimrecord_list:
+                # 拿出每个 record 中有多少claim
+                mcl = MappingClaimLisToRecord.objects.filter(claimrecord_id=claimrecord.id)
+                for mc in mcl:
+                    claim_id_list.append(mc.id)
+            # 根据 record id 拿到所有 claim_id_list
+            # 根据claim name分类 并统计个数
+            print (claim_id_list)
+            cc = Claimlist.objects.filter(id__in=claim_id_list).values("claim_name",).annotate(claim_count_total=Sum('claim_count'))
+            print (cc)
+            # 分析record记录所在年份和月份
+            for c in cc:
+                # 如果统计表中有该月份统计则更新该数值
+                # 如果统计表中没有该月份统计则创建该月份统计
+                StatisticChart.objects.update_or_create(asset_name=c["claim_name"],category=Category.objects.get(id=category_info.id),
+                                            claim_count=c["claim_count_total"],year=datetime.datetime.now().year)
+        
+        return qs
+        
+         
 
 
 # 查询图展示

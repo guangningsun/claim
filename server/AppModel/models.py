@@ -52,7 +52,7 @@ class AssetInfo(models.Model):
     
 
 class Claimlist(models.Model):
-    claim_count = models.CharField(max_length=200,verbose_name='申领数量')
+    claim_count = models.IntegerField(verbose_name='申领数量')
     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
     claim_unit =  models.CharField(max_length=200,verbose_name='物品名称')
 
