@@ -103,7 +103,11 @@ def claim_asset(request):
                 # 资产管理减少指定数量物品
                 assetinfo.save()
                 # 创建申领物品
-                cs = Claimlist(claim_count=claim_count,claim_name=claim_name,claim_unit=claim_unit)
+                cs = Claimlist(claim_count=claim_count,
+                                claim_name=claim_name,
+                                claim_unit=claim_unit,
+                                year=datetime.datetime.now().year,
+                                month=datetime.datetime.now().month)
                 cs.save()
                 # 申领物品加入该条申领记录中
                 cr.claim_list.add(cs)
