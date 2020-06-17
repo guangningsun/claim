@@ -184,14 +184,18 @@ class StatisticChartAdmin(ImportExportModelAdmin):
             # 根据 record id 拿到所有 claim_id_list
             # 根据claim name分类 并统计个数
             print (claim_id_list)
-            cc = Claimlist.objects.filter(id__in=claim_id_list).values("claim_name",).annotate(claim_count_total=Sum('claim_count'))
+            cc = Claimlist.objects.filter(id__in=claim_id_list).values("claim_name","month","year").annotate(claim_count_total=Sum('claim_count'))
             print (cc)
             # 分析record记录所在年份和月份
             for c in cc:
                 # 如果统计表中有该月份统计则更新该数值
                 # 如果统计表中没有该月份统计则创建该月份统计
-                StatisticChart.objects.update_or_create(asset_name=c["claim_name"],category=Category.objects.get(id=category_info.id),
-                                            claim_count=c["claim_count_total"],year=datetime.datetime.now().year)
+                StatisticChart.objects.update_or_create(asset_name=c["claim_name"],
+                                            category=Category.objects.get(id=category_info.id),
+                                            claim_count=c["claim_count_total"],
+                                            #year=datetime.datetime.now().year,
+                                            year=c["year"],
+                                            month=c["month"])
         
         return qs
         
